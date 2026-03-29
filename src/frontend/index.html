@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UNICC AI Safety Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo" onclick="showView('evaluate')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="11" stroke="#1a73e8" stroke-width="1.8"/>
+        <path d="M7 12l3.5 3.5L17 8.5" stroke="#1a73e8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-text">UNICC <strong>AI Safety Lab</strong></span>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" id="nav-evaluate" onclick="showView('evaluate')">Evaluate</button>
+      <button class="nav-btn" id="nav-history" onclick="showView('history')">History</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════ EVALUATE ═══════════════════════ -->
+<main id="view-evaluate" class="view active">
+  <div class="page-center">
+
+    <div class="eval-header">
+      <h1>AI Safety Evaluation</h1>
+      <p>Submit AI-generated content or interaction logs for multi-perspective safety analysis.</p>
+    </div>
+
+    <!-- Input Card -->
+    <div class="card input-card">
+      <!-- Mode toggle -->
+      <div class="input-mode-row">
+        <button class="mode-btn active" id="mode-paste" onclick="setMode('paste')">Paste text</button>
+        <button class="mode-btn" id="mode-upload" onclick="setMode('upload')">Upload file</button>
+        <span class="supported-formats">Supports: .txt .md .json .csv .xlsx .docx</span>
+      </div>
+
+      <!-- Paste mode -->
+      <div id="mode-paste-area">
+        <textarea id="paste-content" rows="12"
+          placeholder="Paste AI-generated content, conversation logs, or a batch of text samples here...
+
+Examples:
+• A document or article written by an AI
+• A JSON array of user↔AI conversation turns
+• A dataset of text samples (one per line or CSV format)"></textarea>
+      </div>
+
+      <!-- Upload mode -->
+      <div id="mode-upload-area" class="hidden">
+        <div class="dropzone" id="dropzone"
+          onclick="document.getElementById('file-input').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)">
+          <div class="drop-icon">📂</div>
+          <div class="drop-text">Drop file here or <span class="drop-link">browse</span></div>
+          <div class="drop-hint">.txt · .md · .json · .csv · .xlsx · .docx · up to 10 MB</div>
+        </div>
+        <input type="file" id="file-input" class="hidden"
+          accept=".txt,.md,.json,.csv,.xlsx,.docx"
+          onchange="handleFileSelect(event)"/>
+        <div id="file-info" class="file-info hidden"></div>
+      </div>
+
+      <!-- Context -->
+      <div class="context-row">
+        <input id="context-input" type="text"
+          placeholder="Optional: describe the AI system that produced this content (e.g. 'HR chatbot for resume screening')"/>
+      </div>
+    </div>
+
+    <!-- Settings Card (collapsible) -->
+    <div class="card settings-card">
+      <div class="settings-header" onclick="toggleSettings()">
+        <div class="settings-title">
+          <span class="settings-icon">⚙️</span>
+          <span>Judge Model Settings</span>
+          <span class="provider-tag" id="provider-tag">Claude Sonnet 4.6</span>
+        </div>
+        <svg id="settings-chevron" width="16" height="16" viewBox="0 0 16 16" class="chevron">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+
+      <div id="settings-body" class="settings-body hidden">
+        <p class="settings-desc">All three judges and the synthesis use this model. Your API key is never stored.</p>
+
+        <div class="provider-tabs">
+          <button class="provider-tab active" id="tab-anthropic" onclick="setProvider('anthropic')">◆ Claude</button>
+          <button class="provider-tab" id="tab-openai"    onclick="setProvider('openai')">⬡ ChatGPT</button>
+          <button class="provider-tab" id="tab-local_slm" onclick="setProvider('local_slm')">⬡ Local SLM</button>
+        </div>
+
+        <div id="fields-anthropic">
+          <div class="settings-row">
+            <div class="field-half">
+              <label>API Key</label>
+              <input id="anthropic_key" type="password" placeholder="sk-ant-..."/>
+            </div>
+            <div class="field-half">
+              <label>Model</label>
+              <select id="anthropic_model" onchange="updateProviderTag()">
+                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+                <option value="claude-opus-4-6">Claude Opus 4.6</option>
+                <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="fields-openai" class="hidden">
+          <div class="settings-row">
+            <div class="field-half">
+              <label>API Key</label>
+              <input id="openai_key" type="password" placeholder="sk-..."/>
+            </div>
+            <div class="field-half">
+              <label>Model</label>
+              <select id="openai_model" onchange="updateProviderTag()">
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="fields-local_slm" class="hidden">
+          <div class="info-box">
+            Install <a href="https://ollama.com" target="_blank">Ollama</a>, run
+            <code>ollama pull llama3.2</code>, then enter the model name below.
+          </div>
+          <div class="settings-row">
+            <div class="field-half">
+              <label>Model name</label>
+              <input id="slm_model" type="text" value="llama3.2" onchange="updateProviderTag()"/>
+            </div>
+            <div class="field-half">
+              <label>Base URL</label>
+              <input id="slm_url" type="text" value="http://localhost:11434/v1"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-primary" id="submit-btn" onclick="submitEvaluation()">
+      <span id="submit-text">Run Safety Evaluation</span>
+      <span id="submit-spinner" class="spinner hidden"></span>
+    </button>
+    <div id="submit-error" class="error-msg hidden"></div>
+
+    <!-- Progress (shown during evaluation) -->
+    <div id="progress-panel" class="progress-panel hidden">
+      <div class="progress-step" id="step-1">
+        <div class="step-dot active"></div>
+        <span>Detecting content type</span>
+      </div>
+      <div class="progress-step" id="step-2">
+        <div class="step-dot"></div>
+        <span>Running 3 judges in parallel</span>
+      </div>
+      <div class="progress-step" id="step-3">
+        <div class="step-dot"></div>
+        <span>Cross-judge arbitration</span>
+      </div>
+      <div class="progress-step" id="step-4">
+        <div class="step-dot"></div>
+        <span>Synthesizing final verdict</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════════════════════ RESULTS ═══════════════════════ -->
+<main id="view-results" class="view">
+  <div class="results-wrap">
+
+    <!-- Top bar -->
+    <div class="results-topbar">
+      <button class="btn-back" onclick="showView('evaluate')">
+        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        New Evaluation
+      </button>
+      <div class="result-meta">
+        <span id="result-filename" class="result-name"></span>
+        <span id="result-ctype" class="result-ctype-badge"></span>
+        <span id="result-ts" class="result-ts"></span>
+      </div>
+      <button class="btn-ghost small" onclick="downloadReport()">↓ Export JSON</button>
+    </div>
+
+    <!-- Verdict Banner -->
+    <div id="verdict-banner" class="verdict-banner">
+      <div class="vb-left">
+        <div class="vb-icon" id="vb-icon"></div>
+        <div>
+          <div class="vb-verdict" id="vb-verdict"></div>
+          <div class="vb-summary" id="vb-summary"></div>
+        </div>
+      </div>
+      <div class="vb-scores">
+        <div class="vb-score-item">
+          <div class="vb-score-num" id="vb-score"></div>
+          <div class="vb-score-lbl">Safety Score</div>
+        </div>
+        <div class="vb-divider"></div>
+        <div class="vb-score-item">
+          <div class="vb-score-num" id="vb-tier"></div>
+          <div class="vb-score-lbl">Risk Tier</div>
+        </div>
+        <div class="vb-divider"></div>
+        <div class="vb-score-item">
+          <div class="vb-score-num" id="vb-agree"></div>
+          <div class="vb-score-lbl">Agreement</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top 5 Deductions -->
+    <div id="deductions-section">
+      <div class="section-label">Top Deduction Points <span class="label-note">specific violations found</span></div>
+      <div id="deductions-list" class="deductions-list"></div>
+    </div>
+
+    <!-- 3 Judge Cards -->
+    <div class="section-label">Independent Judge Verdicts</div>
+    <div class="judges-grid" id="judges-grid"></div>
+
+    <!-- Conditions -->
+    <div id="conditions-section" class="hidden">
+      <div class="section-label">Required Conditions for Approval</div>
+      <div class="card" id="conditions-list"></div>
+    </div>
+
+    <!-- Consensus + Dissent -->
+    <div class="two-col">
+      <div>
+        <div class="section-label">Consensus Findings</div>
+        <div class="card finding-card" id="consensus-list"></div>
+      </div>
+      <div>
+        <div class="section-label">Dissenting Views <span class="gov-badge">Governance Signals</span></div>
+        <div class="card finding-card" id="dissent-list"></div>
+      </div>
+    </div>
+
+    <!-- Critiques (collapsible) -->
+    <div class="section-label collapsible-label" onclick="toggleCritiques()">
+      Cross-Judge Critiques
+      <span id="critiques-toggle-btn" class="toggle-btn">Show ▾</span>
+    </div>
+    <div id="critiques-body" class="critiques-grid hidden"></div>
+
+    <!-- Synthesis -->
+    <div class="section-label">Final Synthesis</div>
+    <div class="card synthesis-card" id="synthesis-text"></div>
+
+  </div>
+</main>
+
+<!-- ═══════════════════════ HISTORY ═══════════════════════ -->
+<main id="view-history" class="view">
+  <div class="page-center">
+    <div class="eval-header">
+      <h1>Evaluation History</h1>
+      <p>All evaluations from this session.</p>
+    </div>
+    <div id="history-empty" class="empty-state hidden">
+      <div class="empty-icon">📋</div>
+      <p>No evaluations yet.</p>
+    </div>
+    <div class="card table-card" id="history-table-card">
+      <table class="history-table">
+        <thead>
+          <tr><th>File / Source</th><th>Type</th><th>Time</th><th>Score</th><th>Tier</th><th>Verdict</th><th></th></tr>
+        </thead>
+        <tbody id="history-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
