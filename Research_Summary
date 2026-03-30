@@ -100,12 +100,4 @@ These outputs directly support:
 - **Project 2**, which will adapt and fine-tune the SLM and implement the expert modules
 - **Project 3**, which will integrate the system, build the user-facing workflow, and test it end-to-end :contentReference[oaicite:20]{index=20}
 
-## Summary
-Project 1 is not a “light” or purely academic phase. It is the stage in which the team decides what is being built, how it will be structured, what assumptions it will rely on, and how future implementation work should be organized.
 
-In practical terms, Project 1 should produce the technical blueprint for the AI Safety Lab:
-- what the system is
-- what each expert module does
-- how they coordinate
-- what environment they will run in
-- what documents and technical artifacts the team will use to move into implementation
