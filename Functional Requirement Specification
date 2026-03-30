@@ -1,1 +1,207 @@
+# Functional Requirements Specification (Draft)
 
+## Document Purpose
+This Functional Requirements Specification (FRS) defines the first-draft requirements for the Spring 2026 UNICC AI Safety Lab from the perspective of Project 1: Research and Platform Preparation. Its purpose is to establish a shared understanding of what the AI Safety Lab is expected to do, what its major components are, how those components interact, and what constraints must guide implementation in later project phases.
+
+This draft is based on:
+- the Spring 2026 capstone memorandum
+- the requirement to integrate the top three Fall 2025 solutions into a multi-module inference ensemble
+- the requirement that the ensemble operate as a council of experts on a standalone SLM in the DGX Spark cluster environment :contentReference[oaicite:35]{index=35}
+
+## System Purpose
+The purpose of the AI Safety Lab is to provide a standalone, auditable, governance-aligned system for evaluating AI agents before deployment. Rather than depending on a single evaluator or black-box vendor system, the lab will use a multi-module inference ensemble in which three expert modules independently assess a case and then coordinate through critique, arbitration, and synthesis.
+
+The system is intended to help institutional stakeholders:
+- assess trust, safety, and governance risks
+- compare multiple expert perspectives
+- preserve transparency in AI safety evaluation
+- support pre-deployment review in controlled environments
+
+## System Scope
+The scope of the AI Safety Lab includes:
+- hosting a standalone open-source SLM in a DGX-based environment
+- accepting structured AI evaluation cases
+- routing each case to three expert modules
+- collecting structured outputs from each module
+- coordinating module outputs through a council-of-experts process
+- generating final synthesized recommendations
+- preserving execution artifacts for later reporting and review
+- supporting later integration into a testing and user-experience layer
+
+The current Project 1 scope does **not** require delivery of the fully implemented ensemble or production-ready interface. Instead, it requires the specifications and platform planning needed to support those later deliverables.
+
+## Intended Users
+
+### Student Developers
+Students building the expert modules, orchestration logic, and interface layers.
+
+### Evaluators / Internal Testers
+Users who submit AI cases or transcripts for evaluation and review the outputs.
+
+### Project Sponsors / Advisors
+Faculty and client stakeholders who need visibility into design, progress, and final system behavior.
+
+### Future UNICC Stakeholders
+Potential users of the final AI Safety Lab for governance-aligned AI evaluation in institutional settings.
+
+## Functional Requirements
+
+### FR-1: Case Intake
+The system shall accept structured AI evaluation cases as input.
+
+Examples of acceptable case formats may include:
+- structured prompt/response logs
+- uploaded JSON artifacts
+- metadata-tagged evaluation scenarios
+
+### FR-2: Input Validation and Normalization
+The system shall validate incoming cases and normalize them into a shared internal schema prior to module evaluation.
+
+### FR-3: Standalone SLM Runtime
+The system shall operate on a standalone small language model deployed locally within the DGX environment or a compatible on-premises environment.
+
+### FR-4: Multi-Module Evaluation
+The system shall route each normalized case to three independent expert modules.
+
+### FR-5: Distinct Expert Perspectives
+The system shall preserve distinct expert roles rather than collapsing all evaluations into a single undifferentiated process.
+
+At minimum, the three expert perspectives shall include:
+- Safety / Adversarial
+- Governance / Compliance
+- Humanitarian / Operational Context
+
+### FR-6: Structured Module Outputs
+Each expert module shall return outputs in a shared structured format that includes:
+- case identifier
+- module name
+- dimension scores
+- flags
+- rationale
+- confidence
+- recommendation
+
+### FR-7: Comparison of Expert Outputs
+The system shall compare expert outputs in order to identify:
+- areas of agreement
+- areas of disagreement
+- high-risk conflicts requiring additional review
+
+### FR-8: Critique Mechanism
+The system shall support a critique step in which expert modules may evaluate, challenge, or clarify each other’s conclusions.
+
+### FR-9: Arbitration Mechanism
+The system shall support arbitration logic to handle unresolved disagreement after critique.
+
+### FR-10: Synthesized Recommendation
+The system shall generate a final synthesized recommendation that includes:
+- summary of consensus
+- summary of disagreements
+- escalation status
+- final recommendation
+
+### FR-11: Logging and Traceability
+The system shall preserve logs and artifacts for:
+- raw inputs
+- module outputs
+- critique/arbitration actions
+- synthesized outputs
+
+### FR-12: Downstream Integration Support
+The system shall expose outputs in a format that can be consumed later by interface, dashboard, and reporting layers.
+
+## Non-Functional Requirements
+
+### NFR-1: Modularity
+The architecture shall remain modular so that expert modules can be improved or replaced independently.
+
+### NFR-2: Auditability
+The system shall prioritize transparent and traceable evaluation behavior.
+
+### NFR-3: Reproducibility
+The environment and execution flow should support reproducible runs to the extent practical in a model-based system.
+
+### NFR-4: Controlled Deployment
+The system shall be designed for an on-premises, DGX-based, secure research environment.
+
+### NFR-5: Extensibility
+The design shall allow for future addition of:
+- new expert modules
+- new datasets
+- stronger arbitration routines
+- richer UI layers
+
+### NFR-6: Interoperability
+All expert modules shall use a shared input/output schema to support orchestration and later integration.
+
+## Inputs
+The system shall accept at least the following categories of input:
+- case identifier
+- transcript or prompt/response content
+- use-case metadata
+- language metadata
+- domain metadata
+- optional risk metadata
+
+## Outputs
+
+### Module-Level Outputs
+- per-module scores
+- per-module flags
+- rationale
+- recommendation
+- confidence estimate
+
+### System-Level Outputs
+- synthesized recommendation
+- disagreement summary
+- escalation indicator
+- logs and artifacts for reporting
+
+## Constraints
+
+### Platform Constraint
+The system is intended to run in the NYU DGX Spark cluster environment or an equivalent local secure setup. :contentReference[oaicite:36]{index=36}
+
+### Model Constraint
+The system must rely on a standalone open-source SLM rather than external black-box APIs.
+
+### Team Constraint
+Project 1 must focus on architecture and platform preparation rather than full implementation of the fine-tuned ensemble and interface.
+
+### Time Constraint
+The system design should be realistic for a Spring 2026 capstone timeline with team-based division of labor.
+
+## Dependencies
+
+### Dependency on Project 2
+Project 2 will implement:
+- SLM adaptation and fine-tuning
+- expert module specialization
+- council-of-experts execution logic
+
+### Dependency on Project 3
+Project 3 will implement:
+- system integration
+- interface and reporting
+- testing and validation
+- monitoring and usability support
+
+## Assumptions
+The following assumptions are made in this draft:
+- the team will have access to DGX partitions or equivalent environment details
+- an open-source SLM can be selected that is appropriate for local deployment
+- the three Fall 2025 solutions can be abstracted into distinct modules
+- a shared schema can be used across all modules
+- critique, arbitration, and synthesis will initially be implemented in a lightweight form and may become more advanced later
+
+## Open Questions
+The following questions remain open for later phases:
+- which SLM is optimal for this environment?
+- how should module confidence be estimated?
+- should arbitration be deterministic, model-based, or hybrid?
+- how should disagreement be visualized in the final UI?
+- how much fine-tuning is necessary versus prompt specialization?
+
+## Summary
+This FRS draft defines the AI Safety Lab as a modular, standalone, council-of-experts system that accepts structured AI evaluation cases, routes them to three independent expert modules, coordinates their outputs, and generates a final synthesized result. It is intended as a Project 1 planning artifact that guides later implementation and integration.
