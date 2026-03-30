@@ -1,1 +1,16 @@
 
+User/Test Case
+    ↓
+Input Processor
+    ↓
+Standalone SLM
+ ├─ Expert Module 1: Safety
+ ├─ Expert Module 2: Governance
+ └─ Expert Module 3: Humanitarian
+    ↓
+Council Orchestrator
+ ├─ Critique
+ ├─ Arbitration
+ └─ Synthesis
+    ↓
+Results / Logs / Interface
