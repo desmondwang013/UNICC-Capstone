@@ -1,1 +1,111 @@
+# DGX Setup Assumptions
+
+## Purpose
+This document records the working assumptions for how the AI Safety Lab could be prepared to run on the NYU DGX Spark cluster during the capstone project. The memorandum states that student teams will be allocated dedicated partitions within the DGX environment and that the cluster is intended to support secure, deterministic, on-premises AI research and teaching. :contentReference[oaicite:37]{index=37}
+
+At the Project 1 stage, the goal is not to prove final deployment readiness, but to document the assumptions and basic steps that would guide later implementation.
+
+## Environment Assumptions
+
+### Partitioned Team Access
+Assumption:
+Each team receives an isolated workspace or partition on the DGX cluster where it can store code, configuration files, and model assets without interfering with other teams.
+
+### Linux-Based Environment
+Assumption:
+The DGX environment is Linux-based or otherwise provides a Linux-compatible runtime suitable for Python-based AI tooling.
+
+### GPU-Enabled Execution
+Assumption:
+The DGX environment provides GPU access sufficient to host and run a selected small language model for experimentation and inference.
+
+### Local Model Hosting
+Assumption:
+Open-source SLM weights can be placed in a project-specific directory or accessible model storage path for local inference.
+
+### Secure On-Prem Assumptions
+Assumption:
+The environment is controlled, on-premises, and not dependent on external vendor-hosted model APIs for core evaluation behavior.
+
+### Python-Based Tooling
+Assumption:
+The environment supports a Python virtual environment, Conda environment, containerized runtime, or some equivalent method of dependency management.
+
+### Logging and Output Storage
+Assumption:
+The environment supports writing logs, outputs, and evaluation artifacts to project-local directories for traceability and later analysis.
+
+## Platform Goals for Project 1
+For Project 1, the DGX platform work is expected to produce:
+- documented assumptions
+- environment and dependency planning
+- deployment steps
+- configuration planning
+- model selection guidance
+
+Project 1 is not required to complete the final production deployment.
+
+## Proposed Directory Assumptions
+The following paths are suggested as a first draft:
+- project root: `/workspace/unicc-ai-safety-lab/`
+- model directory: `/workspace/unicc-ai-safety-lab/models/`
+- logs directory: `/workspace/unicc-ai-safety-lab/logs/`
+- results directory: `/workspace/unicc-ai-safety-lab/results/`
+- config directory: `/workspace/unicc-ai-safety-lab/platform/`
+
+These are placeholders and should be revised once actual DGX access details are confirmed.
+
+## Basic Setup Workflow
+
+### Step 1: Access the Assigned DGX Workspace
+- log in to the DGX environment or assigned team partition
+- verify directory access and storage availability
+
+### Step 2: Clone the Repository
+- clone the team’s GitHub repository into the project workspace
+- verify file structure and permissions
+
+### Step 3: Create a Python Environment
+- create a virtual environment or Conda environment
+- ensure the Python version matches the project assumptions
+
+### Step 4: Install Dependencies
+- install required libraries from `requirements.txt` or `environment.yml`
+- verify that core packages load correctly
+
+### Step 5: Add Model Files
+- place the selected SLM weights in the designated model directory
+- verify access paths in the configuration file
+
+### Step 6: Configure Paths and Runtime Settings
+- update `config.yaml` or equivalent runtime config
+- confirm model path, device, and log/output locations
+
+### Step 7: Run a Starter Validation or Inference Check
+- run a basic script that confirms:
+  - model loading works
+  - inference works
+  - logs can be written
+  - outputs can be stored
+
+### Step 8: Record Setup Notes
+- document any DGX-specific changes
+- note deviations from assumptions
+- update deployment docs accordingly
+
+## Suggested Initial Validation Checks
+Before more advanced work begins, the team should be able to answer:
+- Can the environment load the selected SLM?
+- Can the environment run a single inference call?
+- Can outputs be logged and stored locally?
+- Can configuration values be changed without code edits?
+- Are GPU and path assumptions correct?
+
+## Risks and Unknowns
+The following issues remain unknown at the Project 1 stage:
+- exact DGX access method
+- exact container/runtime constraints
+- memory and storage quotas
+- permission model for shared vs private storage
+- whether the final team workflow will be purely code-based or partially containerized
 
