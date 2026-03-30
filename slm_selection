@@ -1,1 +1,117 @@
+# SLM Selection Memo
 
+## Purpose
+This memo identifies the criteria for choosing a standalone open-source small language model (SLM) for the AI Safety Lab and presents a first-draft recommendation. The memorandum requires the AI Safety Lab to run on a standalone SLM with open-source weights in the DGX Spark cluster environment. :contentReference[oaicite:38]{index=38}
+
+At the Project 1 stage, this document is meant to guide later implementation rather than finalize a production model decision.
+
+## Selection Goal
+The goal is to choose an open-source model that is:
+- practical to host in a DGX-based research environment
+- capable enough to support modular safety evaluation tasks
+- suitable for experimentation with expert-module specialization
+- compatible with a controlled, auditable deployment model
+- lightweight enough to be realistic for capstone implementation constraints
+
+## Selection Criteria
+
+### Manageable Size
+The model should be small enough to deploy and test in a constrained but GPU-capable research environment.
+
+### Reasoning Quality
+The model should have enough reasoning capability to support structured evaluation tasks and rule-informed prompts.
+
+### Fine-Tuning Potential
+The model should be suitable for later adaptation, specialization, or prompt-guided expert-module behavior.
+
+### Local Deployment Practicality
+The model should work in a standalone local environment without dependence on external APIs.
+
+### Documentation and Ecosystem Support
+The model should have sufficient community support, documentation, and tool compatibility for a student team to work with it effectively.
+
+## Candidate 1 – Compact Instruction-Tuned Open Model
+
+### Description
+A compact instruction-tuned open-weight model in the “small but capable” range.
+
+### Pros
+- relatively manageable deployment footprint
+- likely easier to host and test quickly
+- more realistic for early proof-of-concept deployment
+- good starting point for modular prompt specialization
+
+### Cons
+- may have limited reasoning depth for more complex critique/arbitration routines
+- may need stronger scaffolding to perform governance-heavy evaluation tasks
+- multilingual performance may be modest depending on model choice
+
+### Fit for Project
+Strong as an initial proof-of-concept SLM if the team prioritizes practicality and speed of setup.
+
+## Candidate 2 – Mid-Sized Open Instruction Model
+
+### Description
+A somewhat larger open instruction-tuned model with stronger reasoning and better general performance.
+
+### Pros
+- more capable for structured reasoning and evaluation
+- more likely to support nuanced module behavior
+- stronger candidate for critique and synthesis routines
+
+### Cons
+- larger resource requirements
+- more setup complexity
+- may increase iteration time during the capstone
+
+### Fit for Project
+Strong if DGX resources and team capacity are sufficient, especially if the team wants more headroom for modular behavior.
+
+## Candidate 3 – Multilingual-Friendly Open Model
+
+### Description
+An open-weight model selected partly for multilingual support and cross-language robustness.
+
+### Pros
+- useful for humanitarian and multilingual evaluation cases
+- stronger fit for UN-related operational context
+- aligns well with the project’s emphasis on international and multilingual use cases
+
+### Cons
+- may trade off some efficiency or simplicity
+- model choice may depend heavily on actual DGX constraints
+- documentation and tooling may vary
+
+### Fit for Project
+Strong if multilingual evaluation is treated as a high-priority requirement from the start.
+
+## Recommended First-Draft Choice
+At the Project 1 stage, the recommended approach is to begin with a **compact or mid-sized open instruction-tuned SLM** that offers a balance between practical deployment and enough reasoning capability to support modular safety evaluation.
+
+### Recommendation Rationale
+A practical first choice should:
+- be small enough to run reliably in a team partition
+- be strong enough to support structured evaluation prompts
+- allow later specialization into expert-module roles
+- keep initial deployment and debugging manageable for the capstone timeline
+
+This recommendation favors a model that is not the absolute smallest possible option, but also not so large that it becomes the main engineering bottleneck.
+
+## Deferred Decision Strategy
+Because the exact DGX setup, model availability, and team comfort level may vary, the final choice should be revisited once:
+- actual cluster access is confirmed
+- memory/runtime constraints are known
+- the team has a clearer sense of how much specialization will be implemented in Project 2
+
+Project 1 should therefore treat this as a provisional recommendation and document the selection criteria rather than pretending the decision is final before platform constraints are fully known.
+
+## Suggested Next Step
+Once cluster access is available, the team should run a quick screening of 2–3 candidate models and compare:
+- loadability
+- inference speed
+- simple reasoning prompt quality
+- multilingual response quality
+- ability to follow structured output instructions
+
+## Summary
+This memo recommends starting the AI Safety Lab with a practical open-source instruction-tuned SLM that balances deployability, reasoning quality, and modular experimentation potential. The final selection should be confirmed during later platform testing, but Project 1 establishes the criteria and decision logic needed to make that choice systematically.
