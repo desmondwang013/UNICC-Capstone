@@ -1,1 +1,106 @@
+# Deployment Procedure (Draft)
 
+## Purpose
+This document outlines a draft deployment procedure for the AI Safety Lab in the DGX-based project environment. It is a first-draft operational guide intended to support Project 1 planning and future implementation.
+
+At this stage, the procedure is designed to be:
+- simple
+- reproducible
+- suitable for a secure local model environment
+- compatible with later team refinement
+
+## Assumptions
+This deployment draft assumes:
+- access to a DGX team partition or equivalent Linux-based environment
+- Python is available
+- GPU-enabled model execution is possible
+- the team has access to a selected open-source SLM
+- the repository structure described in this project is in place
+
+## Deployment Steps
+
+### Step 1: Access the Runtime Environment
+- connect to the assigned DGX workspace or local secure environment
+- verify access to project directories
+- confirm that GPU resources are visible if needed
+
+### Step 2: Clone the Repository
+- clone the GitHub repository into the working directory
+- confirm the file structure is present:
+  - research and analysis docs
+  - architecture and specification docs
+  - platform planning docs
+
+### Step 3: Create the Python Environment
+Create and activate a Python virtual environment or Conda environment.
+
+Example:
+- using `python -m venv`
+- or using `conda env create -f environment.yml`
+
+### Step 4: Install Dependencies
+Install libraries using either:
+- `requirements.txt`
+- or `environment.yml`
+
+Confirm that the following can import successfully:
+- torch
+- transformers
+- pydantic
+- pyyaml
+
+### Step 5: Add Model Files
+- place the selected SLM weights in the designated model directory
+- confirm model path naming
+- ensure read access from the project environment
+
+### Step 6: Review and Update Configuration
+Open `config.yaml` and update values such as:
+- model name or path
+- device
+- log path
+- output path
+- enabled modules
+
+### Step 7: Run a Starter Validation or Inference Check
+Run a basic validation script or equivalent starter check that confirms:
+- the model loads successfully
+- inference is possible
+- output directories are writable
+- logs can be created
+
+### Step 8: Confirm Output Locations
+Verify that:
+- logs are written to the intended log directory
+- results appear in the intended results directory
+- config settings are being read correctly
+
+### Step 9: Record Setup Notes
+Document:
+- any DGX-specific changes
+- any dependency issues
+- any path corrections
+- any adjustments needed for later team members
+
+These should be added to notes or setup docs.
+
+## Suggested Smoke Test Checklist
+Before proceeding to more advanced implementation work, confirm the following:
+- repository cloned successfully
+- environment created successfully
+- dependencies installed successfully
+- model path is valid
+- model load succeeds
+- one test input runs
+- one output file is produced
+- one log file is produced
+
+## Expected Next Steps After Initial Deployment
+Once this draft setup is working, later phases would proceed to:
+- implement actual expert-module logic
+- implement orchestration logic
+- connect the runtime to an interface layer
+- build testing workflows and reports
+
+## Summary
+This draft deployment procedure is not intended to represent the final production workflow. Instead, it provides a simple, repeatable starting point for getting the AI Safety Lab environment running in a local DGX-based setting and preparing for later team implementation.
