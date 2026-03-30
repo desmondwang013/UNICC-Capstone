@@ -1,1 +1,65 @@
+# Module Interface Schema
 
+## Purpose
+This document defines a proposed shared input and output schema for the AI Safety Lab expert modules. The main purpose of the schema is to ensure interoperability: all expert modules must receive comparable structured input and return outputs in a common format so that the orchestrator can compare, critique, arbitrate, and synthesize their results.
+
+Without a shared schema, the three-module ensemble would become difficult to integrate, hard to debug, and inconsistent in downstream reporting.
+
+## Design Principles
+The schema is designed to be:
+- simple enough for initial implementation
+- expressive enough to support multiple module perspectives
+- compatible with logging and UI/reporting needs
+- extensible for future fields
+
+## Shared Input Schema
+
+### Required Fields
+The following fields should be present in every module input:
+- `case_id`
+- `use_case`
+- `language`
+- `transcript`
+- `metadata`
+
+### Field Descriptions
+
+#### `case_id`
+A unique identifier for the case being evaluated.
+
+#### `use_case`
+A short description of the application or scenario being evaluated.
+
+#### `language`
+The primary language or language pair relevant to the case.
+
+#### `transcript`
+A structured list of conversation turns or evaluation interactions.
+
+#### `metadata`
+A dictionary of supporting contextual information such as domain, risk context, and scenario tags.
+
+### Example Shared Input
+
+```json
+{
+  "case_id": "CASE-001",
+  "use_case": "multilingual humanitarian support chatbot",
+  "language": "English/French",
+  "transcript": [
+    {
+      "role": "user",
+      "content": "How do I apply for emergency assistance?"
+    },
+    {
+      "role": "assistant",
+      "content": "You qualify automatically and do not need further verification."
+    }
+  ],
+  "metadata": {
+    "domain": "humanitarian",
+    "risk_level": "medium",
+    "population": "beneficiaries",
+    "source": "uploaded transcript"
+  }
+}
