@@ -1,16 +1,182 @@
+# System Architecture
 
-User/Test Case
-    ↓
-Input Processor
-    ↓
-Standalone SLM
- ├─ Expert Module 1: Safety
- ├─ Expert Module 2: Governance
- └─ Expert Module 3: Humanitarian
-    ↓
+## Purpose
+This document presents the first-draft architecture for the Spring 2026 UNICC AI Safety Lab. The design is based on the capstone memorandum’s requirement that the final system be a standalone SLM-based multi-module inference ensemble operating as a “council of experts.” 
+
+The architecture proposed here is intended to provide a practical, modular blueprint that can be used by:
+- **Project 2**, which will build and fine-tune the expert modules and council logic
+- **Project 3**, which will integrate the system, test it, and expose it through a user-facing interface
+
+## Design Principles
+
+### Modularity
+The system should preserve the distinct perspectives of the prior Fall 2025 solutions. The design should not collapse them into a single monolithic evaluation agent.
+
+### Auditability
+All steps in the assessment process should be traceable. Inputs, outputs, module assessments, arbitration steps, and final recommendations should be loggable and reviewable.
+
+### Controlled Deployment
+The system should run in a standalone, on-premises, open-weight environment, consistent with the DGX Spark cluster setting described in the memorandum. :contentReference[oaicite:26]{index=26}
+
+### Interpretability
+The architecture should support explanation, not just prediction. Module outputs should be structured, inspectable, and suitable for downstream reporting.
+
+### Extensibility
+The design should allow future expansion, including additional modules, more datasets, deeper testing, and stronger UI integration.
+
+## High-Level System Overview
+At a high level, the AI Safety Lab is a pipeline that takes a test case or AI interaction transcript, normalizes it, evaluates it from three independent expert perspectives, compares those assessments, resolves disagreement when necessary, and produces a final synthesized result.
+
+The major components are:
+1. Input Processor
+2. Standalone SLM Runtime
+3. Expert Module 1 – Safety / Adversarial Expert
+4. Expert Module 2 – Governance / Compliance Expert
+5. Expert Module 3 – Humanitarian / Operational Context Expert
+6. Council Orchestrator
+7. Logging and Artifact Store
+8. Interface / Reporting Layer
+
+## Main Components
+
+### 1. Input Processor
+The Input Processor receives structured test cases, model outputs, transcripts, or uploaded evaluation artifacts. Its purpose is to normalize inputs into a consistent schema before they are sent to the expert modules.
+
+Responsibilities:
+- validate required fields
+- normalize transcript format
+- attach metadata such as language, domain, use case, and risk context
+- prepare the case for module execution
+
+### 2. Standalone SLM Runtime
+The Standalone SLM Runtime provides the local model environment on the DGX cluster. It serves as the common inference substrate for the expert modules.
+
+Responsibilities:
+- host the selected open-source SLM
+- support local inference without black-box external dependencies
+- provide controlled, reproducible runtime behavior
+- expose configuration hooks for future expert-module tuning
+
+### 3. Expert Module 1 – Safety / Adversarial Expert
+This module focuses on direct safety behaviors and adversarial robustness. It is the natural extension of Jitong Yu’s Safety Agent.
+
+Responsibilities:
+- harmfulness assessment
+- jailbreak vulnerability detection
+- manipulation and deception analysis
+- semantic trigger detection
+- multi-turn adversarial probing
+
+### 4. Expert Module 2 – Governance / Compliance Expert
+This module focuses on governance-aligned evaluation and compliance reasoning. It is the natural extension of the Petri/LLM-as-judge logic described in the Guo paper.
+
+Responsibilities:
+- compliance-oriented scoring
+- governance framework mapping
+- oversight and documentation checks
+- traceability and policy alignment reasoning
+- identification of review requirements and institutional controls
+
+### 5. Expert Module 3 – Humanitarian / Operational Context Expert
+This module focuses on mission context, multilingual and vulnerable-population concerns, and operational deployment implications. It is informed by the UNICC-facing interface and reporting logic in Ning’s work, while also extending to domain-specific humanitarian risk.
+
+Responsibilities:
+- multilingual fairness evaluation
+- vulnerable-population risk detection
+- operational consequence reasoning
+- mission-specific deployment concerns
+- contextual risk interpretation for real-world institutional use
+
+### 6. Council Orchestrator
+The Council Orchestrator coordinates the outputs of the three expert modules. This component is the defining feature of the Spring 2026 system.
+
+Responsibilities:
+- invoke the three modules independently
+- collect module outputs in a shared structure
+- detect agreement and disagreement
+- trigger critique across experts
+- apply arbitration rules when needed
+- produce a final synthesized recommendation
+
+### 7. Logging and Artifact Store
+This layer captures all important execution artifacts.
+
+Responsibilities:
+- preserve raw inputs
+- store module outputs
+- record orchestration actions
+- preserve critique and arbitration results
+- support downstream dashboarding and reporting
+- provide transparency and auditability
+
+### 8. Interface / Reporting Layer
+This layer is most closely aligned with the later integration work in Project 3, but it is already part of the architecture because module outputs must be designed with reporting in mind.
+
+Responsibilities:
+- accept uploaded test cases or transcripts
+- show module-level assessments
+- show disagreement across experts
+- present final recommendation
+- export reports and logs
+
+## Data Flow
+
+### Step 1: Input Submission
+A user, tester, or evaluation script submits a case. This may include:
+- transcript data
+- prompt/response pairs
+- structured evaluation scenarios
+- metadata such as domain, language, or deployment context
+
+### Step 2: Normalization
+The Input Processor validates and converts the case into a shared internal schema.
+
+### Step 3: Independent Module Evaluation
+The normalized case is passed to all three expert modules. Each module evaluates the case separately using the shared schema but its own internal logic, weights, and priorities.
+
+### Step 4: Output Collection
+Each module returns a structured output including:
+- scores
+- flags
+- rationale
+- recommendation
+- confidence estimate
+
+### Step 5: Comparison and Critique
+The Council Orchestrator compares the outputs. If major disagreement is detected, the modules enter a critique step in which they can respond to each other’s conclusions.
+
+### Step 6: Arbitration
+If critique does not resolve disagreement, the orchestrator applies arbitration logic. Arbitration may be rule-based or handled by a specialized arbiter routine in a later project phase.
+
+### Step 7: Synthesis
+The orchestrator generates a final output that includes:
+- consensus findings
+- disagreements
+- final recommendation
+- escalation status
+- logging artifacts for later reporting
+
+### Step 8: Storage and Display
+Final artifacts are written to the logging layer and can be displayed through the interface and reporting system.
+
+## Logical Architecture Diagram (Text Form)
+
+```text
+User / Test Case
+      ↓
+Input Processor / Validator
+      ↓
+Standalone SLM Runtime
+  ├── Expert Module 1: Safety / Adversarial
+  ├── Expert Module 2: Governance / Compliance
+  └── Expert Module 3: Humanitarian / Operational
+      ↓
 Council Orchestrator
- ├─ Critique
- ├─ Arbitration
- └─ Synthesis
-    ↓
-Results / Logs / Interface
+  ├── Comparison
+  ├── Critique
+  ├── Arbitration
+  └── Synthesis
+      ↓
+Logging / Artifact Store
+      ↓
+Interface / Dashboard / Report Export
