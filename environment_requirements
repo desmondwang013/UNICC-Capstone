@@ -1,1 +1,86 @@
+# Environment Requirements
 
+## Purpose
+This document defines the initial software, runtime, and configuration requirements for the AI Safety Lab environment. It is intended to support Project 1 planning and prepare the team for later implementation and testing work.
+
+The goal is to define a practical environment that supports:
+- local model hosting
+- modular expert execution
+- structured data handling
+- logging and artifact generation
+- future orchestration and UI integration
+
+## Runtime Requirements
+
+### Operating Environment
+Assumed environment:
+- Linux-based DGX partition or equivalent local environment
+
+### Python Version
+Recommended:
+- Python 3.11
+
+This version is modern enough for current AI tooling while still widely supported.
+
+### GPU Support
+Required:
+- GPU-enabled execution environment
+- compatible CUDA drivers and libraries
+
+The final AI Safety Lab is expected to rely on local model inference, so a GPU-capable environment is strongly preferred.
+
+## Files and Paths
+The environment should support the following configurable paths:
+- model directory
+- logs directory
+- results directory
+- config directory
+
+Suggested placeholders:
+- `./models`
+- `./logs`
+- `./results`
+- `./platform`
+
+## Configuration Requirements
+The environment should support a configuration file, such as `config.yaml`, that includes:
+- model name or model path
+- device selection
+- log directory
+- output directory
+- enabled modules
+- orchestration settings
+
+This reduces hardcoded values and makes the environment easier to debug and modify.
+
+## Logging Requirements
+The environment should support:
+- writing logs to local storage
+- preserving timestamps
+- preserving case identifiers
+- storing outputs for later reporting and analysis
+
+A simple file-based logging approach is acceptable for the initial project phase.
+
+## Reproducibility Considerations
+To support reproducibility, the team should aim to:
+- document dependency versions
+- preserve config snapshots
+- define consistent input formats
+- use clear run procedures
+
+Full deterministic behavior may not be guaranteed in a model-based system, but environment-level reproducibility should still be a design goal.
+
+## Optional Future Additions
+Later phases may require:
+- containerization
+- test runners
+- orchestration services
+- database support
+- visualization dependencies
+- PDF generation dependencies
+
+These are not required to complete Project 1, but the environment design should remain compatible with future expansion.
+
+## Summary
+The initial environment requirements for the AI Safety Lab are intentionally lightweight. The goal is to define a realistic starting environment for local SLM hosting and modular evaluation, while leaving room for later extension by Projects 2 and 3.
