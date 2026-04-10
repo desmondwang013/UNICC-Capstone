@@ -1,0 +1,5 @@
+{
+  "name": "UNICC AI Safety Sandbox Final",
+  "description": "United Nations International Computing Centre AI Safety Sandbox & Evaluator Agent. A platform for UN personnel to classify, audit, and certify AI systems based on the AI Safety Testing Framework.",
+  "requestFramePermissions": []
+}

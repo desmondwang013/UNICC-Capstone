@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Open Problems in Technical AI Governance & the UNICC Safety Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  .header-gradient { background: linear-gradient(135deg, #57068c 0%, #330662 100%); }
+  .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(87,6,140,0.15); }
+  .tab-active { background: linear-gradient(135deg, #57068c, #330662); color: white; }
+  .tab-inactive { color: #6b7280; background: white; }
+  .tab-inactive:hover { background: #f5f3ff; color: #57068c; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .gradient-box { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .accordion-content.open { max-height: 1200px; }
+  .border-purple { border-left: 4px solid #57068c; }
+  .border-blue   { border-left: 4px solid #3b82f6; }
+  .border-green  { border-left: 4px solid #22c55e; }
+  .border-orange { border-left: 4px solid #f97316; }
+  .border-yellow { border-left: 4px solid #eab308; }
+  .border-gray   { border-left: 4px solid #9ca3af; }
+  .status-strong  { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+  .status-partial { background:#fef9c3; color:#854d0e; border:1px solid #fde047; }
+  .status-scope   { background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; }
+  .status-tag { display:inline-block; padding:3px 12px; border-radius:9999px; font-size:0.72rem; font-weight:700; letter-spacing:0.02em; }
+  .meter-bar { height:10px; border-radius:999px; background:#e9d5ff; overflow:hidden; }
+  .meter-fill { height:100%; border-radius:999px; background: linear-gradient(90deg, #57068c, #7c3aed); transition: width 0.8s ease; }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Header -->
+<header class="header-gradient text-white py-10 px-6">
+  <div class="max-w-6xl mx-auto">
+    <p class="text-purple-200 text-sm font-medium uppercase tracking-widest mb-2">Reading Analysis · AI Governance Frameworks</p>
+    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-3">
+      Open Problems in<br/>Technical AI Governance
+    </h1>
+    <p class="text-xl font-light text-purple-100 mb-4">Mapping the Paper's Open Problems to the UNICC AI Safety Lab Project</p>
+    <p class="text-sm text-purple-200">Dr. Andrés Fortino &nbsp;|&nbsp; New York University &nbsp;|&nbsp; MASY GC-4100 Spring 2026</p>
+  </div>
+</header>
+
+<!-- Sticky Nav -->
+<nav class="sticky top-0 z-50 bg-white shadow-md">
+  <div class="max-w-6xl mx-auto flex overflow-x-auto">
+    <button onclick="showTab(0)" id="tab0" class="tab-active flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">📋 Overview</button>
+    <button onclick="showTab(1)" id="tab1" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">⚠️ The Six Problems</button>
+    <button onclick="showTab(2)" id="tab2" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">🔗 UNICC Coverage</button>
+    <button onclick="showTab(3)" id="tab3" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">🎯 Synthesis & Implications</button>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10">
+
+  <!-- ===== TAB 0: OVERVIEW ===== -->
+  <div id="section0" class="section active">
+
+    <!-- Why This Matters -->
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6 card-hover">
+      <h2 class="text-2xl font-bold text-purple-900 mb-4">🌐 Why This Article Matters for Your Capstone</h2>
+      <p class="text-gray-700 leading-relaxed mb-4">
+        <em>Open Problems in Technical AI Governance</em> is a research paper that identifies the most critical unsolved problems at the intersection of AI capability and governance. It doesn't just describe what AI governance <em>should</em> do — it maps the specific technical gaps that currently prevent governance from working in practice: gaps in evaluation methodology, auditability, compliance verification, security, and the translation of policy principles into operational reality.
+      </p>
+      <p class="text-gray-700 leading-relaxed">
+        This paper provides the academic and policy foundation for your capstone. It explains <em>why</em> an AI Safety Lab like the one you are building for UNICC is not just useful — it is necessary. Each problem the paper identifies is a gap your project is designed to close.
+      </p>
+    </div>
+
+    <!-- At a Glance Cards -->
+    <div class="grid md:grid-cols-3 gap-5 mb-6">
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-purple border-l-4">
+        <div class="text-3xl mb-3">📄</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Source</h3>
+        <p class="text-gray-600 text-sm">An academic paper cataloguing open, unsolved problems in technical AI governance — the gaps between what governance <em>requires</em> and what current AI engineering <em>delivers</em>.</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-blue border-l-4">
+        <div class="text-3xl mb-3">🏛️</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Audience</h3>
+        <p class="text-gray-600 text-sm">Policymakers, AI safety researchers, and organizations (like UNICC) that must deploy AI responsibly within institutional and regulatory frameworks.</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-green border-l-4">
+        <div class="text-3xl mb-3">🎯</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Thesis</h3>
+        <p class="text-gray-600 text-sm">AI governance is failing not because of bad intentions, but because the <em>technical infrastructure</em> for evaluation, verification, and accountability does not yet exist at scale.</p>
+      </div>
+    </div>
+
+    <!-- Coverage Scorecard -->
+    <div class="gradient-box rounded-2xl p-8 mb-6">
+      <h2 class="text-xl font-bold text-purple-900 mb-6">📊 UNICC Safety Lab Coverage Scorecard</h2>
+      <p class="text-gray-600 text-sm mb-6">Once fully realized, the UNICC AI Safety Lab addresses five of the six governance capacity areas the paper identifies. Here is the at-a-glance picture:</p>
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Assessment</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:90%"></div></div></div>
+          <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+        </div>
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Access</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:90%"></div></div></div>
+          <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+        </div>
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Verification</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:90%"></div></div></div>
+          <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+        </div>
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Security</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:55%"></div></div></div>
+          <span class="status-tag status-partial ml-3 flex-shrink-0">Partially Addressed</span>
+        </div>
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Operationalization</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:95%"></div></div></div>
+          <span class="status-tag status-strong ml-3 flex-shrink-0">Strongly Addressed</span>
+        </div>
+        <div class="bg-white rounded-xl p-4 flex items-center gap-4">
+          <div class="w-36 text-sm font-semibold text-gray-800 flex-shrink-0">Ecosystem Monitoring</div>
+          <div class="flex-1"><div class="meter-bar"><div class="meter-fill" style="width:5%"></div></div></div>
+          <span class="status-tag status-scope ml-3 flex-shrink-0">Out of Scope by Design</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div class="bg-white rounded-2xl shadow-md p-8 card-hover">
+      <h2 class="text-xl font-bold text-purple-900 mb-5">🎓 What You Should Take Away</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">1</div><p class="text-gray-700 text-sm">Understand the six major technical governance gaps the paper identifies and why they matter for AI deployers like UNICC</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">2</div><p class="text-gray-700 text-sm">Recognize your capstone as a <em>concrete instantiation</em> of technical AI governance — not just a student project, but a reference implementation</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">3</div><p class="text-gray-700 text-sm">Distinguish between what your project can and should address versus what is explicitly out of scope — and why that boundary is intentional and defensible</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">4</div><p class="text-gray-700 text-sm">Frame the council-of-experts architecture as a direct technical response to the paper's critique that current evaluations offer only partial and lower-bound safety guarantees</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 1: THE SIX PROBLEMS ===== -->
+  <div id="section1" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">⚠️ The Six Open Problems</h2>
+      <p class="text-gray-600 mb-7">The paper organizes technical AI governance gaps into six capacity areas. Each represents a domain where current practice falls short of what responsible deployment requires. Click each to explore the problem in depth.</p>
+
+      <div class="space-y-4">
+
+        <!-- P1: Assessment -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p1')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">1</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Assessment</span>
+                <span class="text-gray-500 text-xs">Evaluating AI Systems Before Deployment</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-strong">Substantially Addressed</span>
+              <span id="p1-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p1" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">There is a lack of reliable, scalable, and governance-aligned evaluation methods for AI systems — especially pre-deployment testing, red-teaming, and downstream impact assessment. The paper notes that evaluations today provide only <strong>partial and lower-bound guarantees</strong> of safety. There is no standardized, repeatable process that gives deployers genuine confidence before an AI system goes live.</p>
+              <div class="bg-red-50 border border-red-100 rounded-lg p-4 mb-4">
+                <p class="text-red-800 text-sm">🚨 <strong>Why this matters for UNICC:</strong> The UN system cannot afford to deploy AI agents that cause harm, violate data privacy, or generate unreliable outputs. A single-pass, single-model evaluation provides insufficient assurance in high-stakes institutional settings.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">Organizations want to deploy AI but have no trusted, systematic way to know whether it is safe to do so. Red-teaming is informal and inconsistent. Impact assessments are rarely performed. And when evaluations exist, they often reflect what the developer chose to measure — not what the deployer needs to know.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- P2: Access -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p2')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">2</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Access</span>
+                <span class="text-gray-500 text-xs">Auditable, Non–Black-Box Evaluation</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-strong">Substantially Addressed</span>
+              <span id="p2-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p2" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">Governance is fundamentally undermined when evaluators lack meaningful access to models, logs, or evaluation artifacts — particularly when AI systems are delivered as black-box APIs. If you cannot inspect how a system reached its output, you cannot audit it, challenge it, or hold it accountable. External validators are often denied the access they need to do their jobs.</p>
+              <div class="bg-red-50 border border-red-100 rounded-lg p-4 mb-4">
+                <p class="text-red-800 text-sm">🚨 <strong>Why this matters for UNICC:</strong> The UN system relies on institutional accountability. Using a commercial black-box API means accepting that a system cannot be independently audited — a risk that is unacceptable for mission-critical, compliance-bound operations.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">When governance bodies, auditors, or regulators ask "how did the AI decide this?", the answer from a black-box system is essentially "we don't know." This is not acceptable in regulated industries, international organizations, or any context where accountability is required.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3: Verification -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p3')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">3</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Verification</span>
+                <span class="text-gray-500 text-xs">Trust, Compliance, and Evidence</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-strong">Substantially Addressed</span>
+              <span id="p3-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p3" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">A core open problem is the ability to <strong>verify claims about AI systems</strong> — that evaluations were actually performed, that safeguards genuinely exist, and that outputs are traceable and defensible. Without verifiable evidence, compliance claims are essentially unaudited self-attestations. There is no technical infrastructure to prove that safety procedures were followed.</p>
+              <div class="bg-red-50 border border-red-100 rounded-lg p-4 mb-4">
+                <p class="text-red-800 text-sm">🚨 <strong>Why this matters for UNICC:</strong> When UNICC deploys an AI agent, it must be able to demonstrate to stakeholders, auditors, and member states that the system was rigorously evaluated. "We checked" is not enough — the evidence of how, when, and by what criteria must be documented and reproducible.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">Verification problems are especially acute in regulatory settings. When an AI system causes harm and investigators ask for evidence of safety testing, organizations without proper documentation face both legal and reputational consequences. The paper identifies this as a systemic gap: the field lacks standardized, tamper-evident records of governance due diligence.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- P4: Security -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p4')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">4</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Security</span>
+                <span class="text-gray-500 text-xs">Controlled Environments & Misuse Prevention</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-partial">Partially Addressed</span>
+              <span id="p4-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p4" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">The paper identifies risks related to unauthorized access, model misuse, adversarial manipulation (prompt injection, jailbreaks), and insecure deployment pipelines. AI systems that can be manipulated into unsafe behavior — or that are deployed without proper access controls — present governance failures at the technical layer, not just the policy layer.</p>
+              <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-4 mb-4">
+                <p class="text-yellow-800 text-sm">⚠️ <strong>Note on partial coverage:</strong> The UNICC project meaningfully addresses <em>deployment-time security governance</em> — isolating compute, preventing external data leakage, and evaluating AI agents as security-relevant artifacts. It does not attempt to solve all model-hardening problems (e.g., adversarial robustness of the base model itself). This is a deliberate scope decision, not a gap.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">Security in AI governance isn't just about firewalls — it includes ensuring that evaluation environments themselves cannot be compromised, that sensitive test data does not leak, and that adversarial inputs used in red-teaming are handled safely. These are non-trivial engineering challenges that the paper treats as an underdeveloped area of the field.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- P5: Operationalization -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p5')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">5</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Operationalization</span>
+                <span class="text-gray-500 text-xs">Turning Principles into Practice</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-strong">Strongly Addressed</span>
+              <span id="p5-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p5" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">Perhaps the most pervasive problem the paper identifies: <strong>translating high-level AI principles into concrete, repeatable technical procedures</strong>. There are now many AI ethics frameworks, principles, and guidelines — but the gap between stating "AI must be safe" and actually building systems that enforce safety in practice remains enormous. Governance often fails at the implementation layer, not the policy layer.</p>
+              <div class="bg-red-50 border border-red-100 rounded-lg p-4 mb-4">
+                <p class="text-red-800 text-sm">🚨 <strong>Why this matters for UNICC:</strong> The UN has published extensive AI ethics principles. What is scarce is the operational infrastructure to enforce them on a case-by-case basis before AI systems are deployed. This is precisely the gap the Safety Lab is filling.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">An organization can have a beautifully written AI ethics policy and still deploy harmful AI systems — because the policy was never embedded into the engineering workflow. Operationalization means building technical controls, checklists, and evaluation processes that make compliance automatic, repeatable, and verifiable — not dependent on individual judgment each time.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- P6: Ecosystem Monitoring -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left transition-colors" onclick="toggleAcc('p6')">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold text-sm flex items-center justify-center flex-shrink-0">6</span>
+              <div>
+                <span class="font-semibold text-gray-800 block">Ecosystem Monitoring</span>
+                <span class="text-gray-500 text-xs">Tracking AI Development at Scale</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="status-tag status-scope">Out of Scope by Design</span>
+              <span id="p6-icon" class="text-purple-700 font-bold text-xl ml-2">+</span>
+            </div>
+          </button>
+          <div id="p6" class="accordion-content">
+            <div class="p-6 border-t border-gray-100 bg-white">
+              <h4 class="font-semibold text-gray-800 mb-2">The Open Problem</h4>
+              <p class="text-gray-600 text-sm leading-relaxed mb-4">The paper emphasizes large-scale ecosystem monitoring — tracking AI development trends, supply chains, model proliferation, and macro-level societal impacts over time. This requires infrastructure that can observe the broader AI landscape, not just individual systems. It is the most systemic and least tractable of the six problems, and arguably requires government-level or international-body-level coordination.</p>
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                <p class="text-gray-600 text-sm">ℹ️ <strong>Why this is out of scope — and that's okay:</strong> The UNICC AI Safety Lab is intentionally focused at the institutional deployment boundary: evaluating specific AI agents before they enter the Sandbox. It does not attempt ecosystem-level surveillance, and it shouldn't. Scope clarity is a feature of good system design, not a limitation.</p>
+              </div>
+              <h4 class="font-semibold text-gray-800 mb-2">What This Means in Practice</h4>
+              <p class="text-gray-600 text-sm leading-relaxed">Ecosystem monitoring would involve tracking things like: which AI models are being used across the UN system, how capabilities and risks are evolving over time, whether supply chain dependencies are creating concentration risks. These are important questions — but they belong to a different layer of governance infrastructure than what your capstone addresses.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: UNICC COVERAGE ===== -->
+  <div id="section2" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">🔗 How the UNICC AI Safety Lab Responds</h2>
+      <p class="text-gray-600 mb-7">For each open problem, here is exactly how the Safety Lab's architecture addresses it — and which project component carries most of the weight.</p>
+
+      <div class="space-y-5">
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-purple border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Assessment → Multi-Module Council of Experts</h3>
+            <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">Rather than a single evaluation pass from one model, the Safety Lab deploys three independent expert modules — each derived from a distinct Fall 2025 solution — that evaluate the same AI agent from different perspectives. Their assessments are then subjected to explicit critique and arbitration before a synthesized recommendation is produced. This directly counters the paper's concern that evaluations today yield only partial, lower-bound safety guarantees.</p>
+          <div class="grid md:grid-cols-3 gap-3 mt-3">
+            <div class="bg-purple-50 rounded-lg p-3 text-center text-xs"><p class="font-bold text-purple-800 mb-1">Module Independence</p><p class="text-purple-600">Each expert evaluates without knowledge of others' verdicts</p></div>
+            <div class="bg-purple-50 rounded-lg p-3 text-center text-xs"><p class="font-bold text-purple-800 mb-1">Red-Teaming Built In</p><p class="text-purple-600">Structured stress testing is a core function, not an afterthought</p></div>
+            <div class="bg-purple-50 rounded-lg p-3 text-center text-xs"><p class="font-bold text-purple-800 mb-1">Synthesis & Arbitration</p><p class="text-purple-600">Disagreements between modules are surfaced and resolved explicitly</p></div>
+          </div>
+          <div class="mt-3 text-xs text-purple-700 font-medium">📌 Primary project: Project 2 (SLM Fine-Tuning & Council Architecture)</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-blue border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Access → Open SLM on On-Premises Infrastructure</h3>
+            <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">The project explicitly avoids black-box dependency by using a standalone Small Language Model with open weights, running on the NYU DGX Spark cluster — on-premises, controlled, and inspectable. Every evaluation output, log, and decision trace is available for internal review and third-party audit. This is the technical foundation for meaningful access that the paper says is currently missing.</p>
+          <div class="grid md:grid-cols-2 gap-3 mt-3">
+            <div class="bg-blue-50 rounded-lg p-3 text-xs"><p class="font-bold text-blue-800 mb-1">Open Weights</p><p class="text-blue-600">The model is not a proprietary black box — its parameters, fine-tuning data, and architecture are transparent and inspectable</p></div>
+            <div class="bg-blue-50 rounded-lg p-3 text-xs"><p class="font-bold text-blue-800 mb-1">On-Premises Compute</p><p class="text-blue-600">The DGX Spark cluster provides deterministic, auditable compute — no external cloud dependencies</p></div>
+          </div>
+          <div class="mt-3 text-xs text-blue-700 font-medium">📌 Primary project: Project 1 (Platform & Research)</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-green border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Verification → Auditable, Evidence-Based Assurance</h3>
+            <span class="status-tag status-strong ml-3 flex-shrink-0">Substantially Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">The AI Safety Lab is designed from the ground up to produce verifiable evidence of evaluation: documented procedures, reproducible runs, explicit records of module disagreement and resolution, and transparent governance-aligned output. This gives UNICC something it currently lacks — a defensible evidentiary record that due diligence was performed, not just claimed.</p>
+          <div class="bg-green-50 rounded-lg p-3 mt-3 text-sm text-green-800">✅ <strong>Key design feature:</strong> The council-of-experts architecture makes the reasoning process itself part of the output — not just a pass/fail verdict. This is what makes verification possible.</div>
+          <div class="mt-3 text-xs text-green-700 font-medium">📌 Primary project: All three projects contribute — but especially Project 3 (Testing, UX & Documentation)</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-yellow border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Security → Isolated Compute & Governance-Aligned Deployment</h3>
+            <span class="status-tag status-partial ml-3 flex-shrink-0">Partially Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">The project addresses deployment-time security governance through isolated compute partitions on the DGX Spark cluster, no external training on sensitive data, and the evaluation of AI agents as security-relevant artifacts. What it does not do — by design — is address the full spectrum of model-hardening challenges (e.g., adversarial robustness of the base SLM itself). This is an appropriate and well-reasoned scope limitation.</p>
+          <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-3 mt-3 text-sm text-yellow-800">⚠️ <strong>Scope note:</strong> Partial coverage here is a deliberate engineering decision. The Safety Lab focuses on what it can control: the evaluation environment and the deployment boundary. Hardening the base model against adversarial inputs is a separate, larger research problem.</div>
+          <div class="mt-3 text-xs text-yellow-700 font-medium">📌 Primary project: Project 1 (Platform Security Configuration)</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-orange border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Operationalization → Safety as a Repeatable Workflow</h3>
+            <span class="status-tag status-strong ml-3 flex-shrink-0">Strongly Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">This is where the UNICC project contributes most significantly. Safety and governance are not policy statements in the Safety Lab — they are embedded as operational workflows. The lab functions as a repeatable institutional control: every AI agent that enters the UNICC Sandbox must pass through a structured, multi-perspective evaluation before production. The council-of-experts architecture operationalizes disagreement, critique, and synthesis as routine steps in the process.</p>
+          <div class="bg-orange-50 rounded-lg p-3 mt-3 text-sm text-orange-800">🌟 <strong>The paper's core concern</strong> is that governance fails at the implementation layer — that principles never become procedures. The Safety Lab is specifically designed to be the bridge: translating UNICC's AI ethics commitments into a technical control that runs every time an AI agent is evaluated.</div>
+          <div class="mt-3 text-xs text-orange-700 font-medium">📌 Addressed across all three projects — it is the defining purpose of the entire system</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-gray border-l-4 opacity-75">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Ecosystem Monitoring → Consciously Out of Scope</h3>
+            <span class="status-tag status-scope ml-3 flex-shrink-0">Not Addressed</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed">The UNICC AI Safety Lab focuses at the institutional deployment boundary — evaluating specific agents, not tracking macro-level AI trends. This is an appropriate and well-reasoned limitation. Ecosystem-level monitoring requires a different kind of infrastructure, different stakeholders, and a different mandate. Being clear about what a system is <em>not</em> doing is as important as defining what it does.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: SYNTHESIS ===== -->
+  <div id="section3" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">🎯 Synthesis & Implications for Your Team</h2>
+      <p class="text-gray-600 mb-7">What the mapping between the paper and your project means — and what it asks of you as designers and engineers.</p>
+
+      <!-- Big Framing Statement -->
+      <div class="gradient-box rounded-2xl p-7 mb-7">
+        <h3 class="text-lg font-bold text-purple-900 mb-3">📌 The Central Framing</h3>
+        <p class="text-gray-700 leading-relaxed mb-3">From the perspective of the paper, the UNICC AI Safety Lab is best understood as a <strong>concrete instantiation of technical AI governance at the institutional deployment boundary</strong> — precisely where the literature identifies the largest gap between policy intent and technical reality.</p>
+        <p class="text-gray-700 leading-relaxed">You are not just building a capstone project. You are building a <em>reference implementation</em> — a working example of how an institution can embed AI governance into its operational workflow rather than leaving it as aspirational policy language.</p>
+      </div>
+
+      <!-- Project-Specific Implications -->
+      <div class="grid md:grid-cols-3 gap-6 mb-7">
+        <div class="bg-gradient-to-b from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
+          <div class="text-3xl mb-3">🏗️</div>
+          <h3 class="font-bold text-purple-900 text-lg mb-3">Project 1<br/><span class="font-normal text-base">Research & Platform</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Frame your literature review around the paper's six capacity areas — use them as organizing headers for what existing work does and doesn't solve</li>
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Document how on-premises deployment on DGX Spark directly resolves the Access problem — this is not just a technical choice, it is a governance choice</li>
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Define the security partitioning strategy in terms of the paper's Security problem — what specific threats does your configuration mitigate?</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-b from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+          <div class="text-3xl mb-3">🧠</div>
+          <h3 class="font-bold text-blue-900 text-lg mb-3">Project 2<br/><span class="font-normal text-base">SLM & Council of Experts</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Design the ensemble so that module disagreements are a first-class output, not an edge case — this is the core response to the Assessment problem</li>
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Ensure the synthesis mechanism produces evidence, not just verdicts — the Verification problem demands traceable reasoning</li>
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Fine-tune on governance, risk, and compliance materials that align with UNICC's institutional values — not generic safety benchmarks</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-b from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+          <div class="text-3xl mb-3">🖥️</div>
+          <h3 class="font-bold text-green-900 text-lg mb-3">Project 3<br/><span class="font-normal text-base">Testing, UX & Integration</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Design the interface to make Operationalization tangible — every UNICC stakeholder who submits an agent should be able to see exactly what the evaluation procedure is and why</li>
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Build the logging and documentation system with Verification in mind — outputs must be exportable, timestamped, and auditable</li>
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Use the paper's taxonomy of governance failures as a checklist for your test case design when validating against past UNICC projects</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Critical Questions -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-7 mb-6">
+        <h3 class="font-bold text-purple-900 text-xl mb-5">❓ Discussion Questions for Your Team</h3>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q1</span>
+            <p class="text-gray-700 text-sm">The paper says evaluations currently provide only "partial and lower-bound guarantees." What would it take to provide stronger-than-lower-bound guarantees, and where does the council-of-experts architecture move the needle most?</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q2</span>
+            <p class="text-gray-700 text-sm">How will your team document the evaluation process so that a future UNICC auditor — unfamiliar with the system — can independently verify that the Safety Lab was applied correctly to a specific AI agent?</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q3</span>
+            <p class="text-gray-700 text-sm">The paper identifies operationalization as the hardest problem — principles never becoming procedures. What specific design choices in your system ensure that the Safety Lab is used consistently, not just when someone remembers to run it?</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q4</span>
+            <p class="text-gray-700 text-sm">Where does your Safety Lab explicitly end — and who or what would need to exist to address the Ecosystem Monitoring gap that is out of your scope? Could your architecture evolve to inform that level of monitoring in the future?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Line -->
+      <div class="header-gradient rounded-2xl p-7 text-white">
+        <h3 class="text-xl font-bold mb-3">🚀 The Bottom Line</h3>
+        <p class="text-purple-100 leading-relaxed mb-3">The paper makes one thing undeniable: the governance infrastructure the world needs for safe AI deployment does not yet exist at scale. Your capstone is not responding to a hypothetical problem — it is responding to a documented, urgent gap that the research community, policymakers, and institutions like UNICC are actively grappling with.</p>
+        <p class="text-purple-100 leading-relaxed">Build it rigorously. Document it thoroughly. The winning team will not just have built a clever system — they will have built something that genuinely demonstrates how technical governance can work in practice.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="bg-white border-t border-gray-200 mt-10 py-6 px-4 text-center text-sm text-gray-400">
+  Dr. Andrés Fortino &nbsp;|&nbsp; NYU School of Professional Studies &nbsp;|&nbsp; MASY GC-4100 Applied Project Capstone · Spring 2026<br/>
+  <span class="text-xs">Source: <em>Open Problems in Technical AI Governance</em> — Mapping to the UNICC AI Safety Lab Project</span>
+</footer>
+
+<script>
+  function showTab(index) {
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('section' + i).classList.remove('active');
+      document.getElementById('tab' + i).className = 'tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all';
+    }
+    document.getElementById('section' + index).classList.add('active');
+    document.getElementById('tab' + index).className = 'tab-active flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all';
+  }
+
+  function toggleAcc(id) {
+    const content = document.getElementById(id);
+    const icon = document.getElementById(id + '-icon');
+    const isOpen = content.classList.contains('open');
+    document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('[id$="-icon"]').forEach(el => { if(el) el.textContent = '+'; });
+    if (!isOpen) {
+      content.classList.add('open');
+      if(icon) icon.textContent = '−';
+    }
+  }
+</script>
+</body>
+</html>

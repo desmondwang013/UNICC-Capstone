@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UNICC AI Safety Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand">
+        <h1>UNICC AI Safety Lab</h1>
+        <p>Council-based evaluation for AI agents and content — MoE orchestration with expert review</p>
+      </div>
+      <div id="backend-status" class="backend-status checking">
+        <span class="status-dot"></span>
+        <span class="status-label">Checking...</span>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-view="dashboard">Dashboard</button>
+      <button class="tab" data-view="run">Run Evaluation</button>
+      <button class="tab" data-view="reports">Reports</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="wrap">
+
+    <!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+    <section id="view-dashboard">
+
+      <div class="hero">
+        <div class="panel hero-main">
+          <div class="eyebrow">Council-Based Evaluation Architecture</div>
+          <h2>Three expert modules support a final council synthesis.</h2>
+          <p>
+            Content submitted to the Safety Lab is routed through three independent expert judges —
+            adversarial red-teaming, governance &amp; risk classification, and regulatory compliance.
+            Each produces an independent score, then the council orchestrator compares, critiques, arbitrates,
+            and synthesizes a final composite verdict before any AI agent is cleared for UNICC deployment.
+          </p>
+        </div>
+        <div class="panel hero-side">
+          <div class="mini-label">Overall Status</div>
+          <div class="score-hero">
+            <div class="score-big" id="dash-overall">—</div>
+            <div class="score-sub">out of 100</div>
+          </div>
+          <div class="meter"><div class="meter-fill" id="dash-overall-bar" style="width:0%"></div></div>
+          <div class="score-range"><span>0</span><span>100</span></div>
+          <div id="dash-verdict-badge" class="dash-verdict-badge hidden"></div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h3>Expert Modules</h3>
+        <span>Scores displayed on a 0–100 scale</span>
+      </div>
+
+      <div class="grid-3">
+        <!-- Judge 1 -->
+        <div class="panel card">
+          <div class="module-tag">Expert Module 1</div>
+          <h4>Safety / Adversarial</h4>
+          <p>Evaluates direct safety behaviors, harmful outputs, deception, and adversarial robustness.</p>
+          <div class="score-row">
+            <div>
+              <div class="score-val" id="dash-j1">—</div>
+              <div class="score-cap">Current score</div>
+            </div>
+            <div class="score-cap">0–100 scale</div>
+          </div>
+          <div class="meter"><div class="meter-fill" id="dash-j1-bar" style="width:0%"></div></div>
+          <ul class="responsibilities">
+            <li>harmfulness &amp; toxicity assessment</li>
+            <li>deception and manipulation analysis</li>
+            <li>legal compliance checks</li>
+            <li>bias &amp; fairness evaluation</li>
+            <li>transparency and self-preservation signals</li>
+          </ul>
+        </div>
+
+        <!-- Judge 2 -->
+        <div class="panel card">
+          <div class="module-tag">Expert Module 2</div>
+          <h4>Governance / Risk</h4>
+          <p>Evaluates governance posture, institutional risk classification, and policy alignment from content evidence.</p>
+          <div class="score-row">
+            <div>
+              <div class="score-val" id="dash-j2">—</div>
+              <div class="score-cap">Current score</div>
+            </div>
+            <div class="score-cap">0–100 scale</div>
+          </div>
+          <div class="meter"><div class="meter-fill" id="dash-j2-bar" style="width:0%"></div></div>
+          <ul class="responsibilities">
+            <li>transparency and explainability</li>
+            <li>fairness and non-discrimination</li>
+            <li>robustness and reliability signals</li>
+            <li>privacy and data handling</li>
+            <li>accountability and human oversight</li>
+          </ul>
+        </div>
+
+        <!-- Judge 3 -->
+        <div class="panel card">
+          <div class="module-tag">Expert Module 3</div>
+          <h4>Regulatory Compliance</h4>
+          <p>Maps content evidence to major AI regulatory frameworks and identifies unmet requirements.</p>
+          <div class="score-row">
+            <div>
+              <div class="score-val" id="dash-j3">—</div>
+              <div class="score-cap">Current score</div>
+            </div>
+            <div class="score-cap">0–100 scale</div>
+          </div>
+          <div class="meter"><div class="meter-fill" id="dash-j3-bar" style="width:0%"></div></div>
+          <ul class="responsibilities">
+            <li>EU AI Act risk-tier classification</li>
+            <li>NIST AI RMF govern/map/measure</li>
+            <li>UNESCO AI Ethics principles</li>
+            <li>ISO/IEC 42001 controls</li>
+            <li>OECD AI Principles alignment</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel council-large">
+        <div class="section-title" style="margin-top:0;">
+          <h3>Council Orchestrator</h3>
+          <span>Final composite verdict</span>
+        </div>
+        <div class="council-grid">
+          <div>
+            <p style="margin-top:0; color:var(--muted); line-height:1.65;">
+              The council orchestrator serves as the final synthesis layer. It compares outputs from the three
+              expert modules, critiques differences in reasoning, arbitrates conflicting findings, and applies a
+              conservative tier override — the final risk tier is never lower than the highest individual judge verdict.
+              Disagreements are surfaced explicitly as governance signals, not suppressed.
+            </p>
+            <div class="council-list">
+              <div class="council-item">Fan-out</div>
+              <div class="council-item">Critique</div>
+              <div class="council-item">Arbitration</div>
+              <div class="council-item">Synthesis</div>
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Council Final Score</div>
+            <div class="score-hero">
+              <div class="score-big" id="dash-council">—</div>
+              <div class="score-sub">out of 100</div>
+            </div>
+            <div class="meter"><div class="meter-fill" id="dash-council-bar" style="width:0%"></div></div>
+            <div class="score-range"><span>0</span><span>100</span></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════ RUN EVALUATION ═══════════════════════ -->
+    <section id="view-run" class="hidden">
+      <div class="run-layout">
+
+        <!-- Form panel -->
+        <div class="panel form-panel">
+          <div class="section-title" style="margin-top:0; margin-bottom:18px;">
+            <h3>Run Evaluation</h3>
+            <span>Submit AI content for council review</span>
+          </div>
+
+          <!-- Mode toggle -->
+          <div class="input-mode-row">
+            <button class="mode-btn active" id="mode-paste" onclick="setMode('paste')">Paste text</button>
+            <button class="mode-btn" id="mode-upload" onclick="setMode('upload')">Upload file</button>
+            <span class="supported-formats">Supports: .txt .md .json .csv .xlsx .docx</span>
+          </div>
+
+          <!-- Paste -->
+          <div id="mode-paste-area" class="field">
+            <label>Submission Content</label>
+            <textarea id="paste-content" rows="11"
+              placeholder="Paste AI-generated content, conversation logs, or a batch of text samples here...
+
+Examples:
+• A document or article written by an AI
+• A JSON array of user↔AI conversation turns
+• A dataset of text samples (one per line or CSV format)"></textarea>
+          </div>
+
+          <!-- Upload -->
+          <div id="mode-upload-area" class="field hidden">
+            <label>File Upload</label>
+            <div class="upload" id="dropzone"
+              ondragover="handleDragOver(event)" ondragleave="handleDragLeave()" ondrop="handleDrop(event)">
+              <div class="upload-icon">↑</div>
+              <div>Drag and drop a file here, or</div>
+              <label class="upload-browse-btn">
+                Browse
+                <input type="file" id="file-input" accept=".txt,.md,.json,.csv,.xlsx,.docx" onchange="handleFileSelect(event)" style="display:none"/>
+              </label>
+              <div class="upload-formats">Accepted: .txt .md .json .csv .xlsx .docx</div>
+            </div>
+            <div id="file-info" class="file-info hidden"></div>
+          </div>
+
+          <!-- Context -->
+          <div class="field">
+            <label>Optional Context <span class="field-hint">Describe the AI system or scenario</span></label>
+            <input type="text" id="context-input" placeholder="e.g. Customer service chatbot for a financial institution"/>
+          </div>
+
+          <!-- Error -->
+          <div id="submit-error" class="error-box hidden"></div>
+
+          <!-- Progress -->
+          <div id="progress-panel" class="progress-panel hidden">
+            <div class="progress-step" id="step-1">
+              <div class="step-dot"></div>
+              <span>Detecting content type</span>
+            </div>
+            <div class="progress-step" id="step-2">
+              <div class="step-dot"></div>
+              <span>Running expert judges in parallel</span>
+            </div>
+            <div class="progress-step" id="step-3">
+              <div class="step-dot"></div>
+              <span>Cross-judge arbitration</span>
+            </div>
+            <div class="progress-step" id="step-4">
+              <div class="step-dot"></div>
+              <span>Council synthesis</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="submit-btn" onclick="submitEvaluation()">
+            <span id="submit-spinner" class="spinner hidden"></span>
+            <span id="submit-text">Run Safety Evaluation</span>
+          </button>
+        </div>
+
+        <!-- Side panel: Settings + Frameworks -->
+        <div class="panel side-panel">
+
+          <!-- LLM Settings -->
+          <div class="section-title" style="margin-top:0; margin-bottom:16px;">
+            <h3>Model Settings</h3>
+            <span id="provider-tag" class="provider-tag">Claude Sonnet</span>
+          </div>
+
+          <div class="provider-tabs">
+            <button class="provider-tab active" id="tab-anthropic"  onclick="setProvider('anthropic')">Claude</button>
+            <button class="provider-tab"         id="tab-openai"    onclick="setProvider('openai')">ChatGPT</button>
+            <button class="provider-tab"         id="tab-local_slm" onclick="setProvider('local_slm')">Local SLM</button>
+          </div>
+
+          <div id="fields-anthropic" class="provider-fields">
+            <div class="field">
+              <label>API Key</label>
+              <input type="password" id="anthropic_key" placeholder="sk-ant-… (or set in server .env)"/>
+            </div>
+            <div class="field">
+              <label>Model</label>
+              <select id="anthropic_model" onchange="updateProviderTag()">
+                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+                <option value="claude-opus-4-6">Claude Opus 4.6</option>
+                <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="fields-openai" class="provider-fields hidden">
+            <div class="field">
+              <label>API Key</label>
+              <input type="password" id="openai_key" placeholder="sk-…"/>
+            </div>
+            <div class="field">
+              <label>Model</label>
+              <select id="openai_model" onchange="updateProviderTag()">
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o mini</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="fields-local_slm" class="provider-fields hidden">
+            <div class="field">
+              <label>Ollama Base URL</label>
+              <input type="text" id="slm_url" value="http://localhost:11434/v1"/>
+            </div>
+            <div class="field">
+              <label>Model Name</label>
+              <input type="text" id="slm_model" placeholder="llama3.2" onchange="updateProviderTag()"/>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Framework badges -->
+          <div class="section-title" style="margin-bottom:12px;">
+            <h3 style="font-size:16px;">Evaluation Frameworks</h3>
+          </div>
+
+          <div class="framework-grid">
+            <div class="framework-option">
+              <div>
+                <strong>EU AI Act</strong>
+                <span>Risk-based governance and compliance review.</span>
+              </div>
+            </div>
+            <div class="framework-option">
+              <div>
+                <strong>NIST AI RMF</strong>
+                <span>Govern, map, measure, and manage AI risk.</span>
+              </div>
+            </div>
+            <div class="framework-option">
+              <div>
+                <strong>UNESCO AI Ethics</strong>
+                <span>Human rights, fairness, and societal impact.</span>
+              </div>
+            </div>
+            <div class="framework-option">
+              <div>
+                <strong>ISO/IEC 42001</strong>
+                <span>Standards-based evaluation and controls.</span>
+              </div>
+            </div>
+            <div class="framework-option">
+              <div>
+                <strong>OECD Principles</strong>
+                <span>Inclusive growth, transparency, accountability.</span>
+              </div>
+            </div>
+            <div class="framework-option">
+              <div>
+                <strong>OWASP LLM Top 10</strong>
+                <span>LLM-specific security and attack surface.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ REPORTS ═══════════════════════ -->
+    <section id="view-reports" class="hidden">
+
+      <!-- History list (default) -->
+      <div id="reports-list">
+        <div id="history-empty" class="panel reports-empty hidden">
+          <div class="eyebrow">Reports</div>
+          <h3>No evaluation reports yet</h3>
+          <p>Reports will appear here after a completed evaluation run.</p>
+          <button class="btn btn-primary" style="width:auto;margin-top:16px;padding:12px 24px;" onclick="switchTab('run')">Run Evaluation</button>
+        </div>
+        <div id="history-table-card" class="panel hidden">
+          <div class="history-header">
+            <h3>Evaluation History</h3>
+            <span id="history-count"></span>
+          </div>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>File / Content</th>
+                <th>Type</th>
+                <th>Timestamp</th>
+                <th>Score</th>
+                <th>Risk Tier</th>
+                <th>Verdict</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Detail view (shown after eval or clicking View) -->
+      <div id="reports-detail" class="hidden">
+
+        <!-- Back button -->
+        <div class="detail-nav">
+          <button class="btn-back" onclick="showReportsList()">← Back to Reports</button>
+          <div class="detail-meta">
+            <span id="result-filename" class="detail-filename"></span>
+            <span class="detail-sep">·</span>
+            <span id="result-ctype" class="detail-chip"></span>
+            <span class="detail-sep">·</span>
+            <span id="result-ts" class="detail-ts"></span>
+          </div>
+          <button class="btn btn-secondary" style="width:auto;padding:8px 16px;" onclick="downloadReport()">Export JSON</button>
+        </div>
+
+        <!-- Verdict banner -->
+        <div id="verdict-banner" class="verdict-banner">
+          <div class="vb-left">
+            <div id="vb-icon" class="vb-icon"></div>
+            <div>
+              <div id="vb-verdict" class="vb-verdict"></div>
+              <div id="vb-summary" class="vb-summary"></div>
+            </div>
+          </div>
+          <div class="vb-right">
+            <div class="vb-stat"><div id="vb-score" class="vb-stat-val"></div><div class="vb-stat-lbl">Score</div></div>
+            <div class="vb-stat"><div id="vb-tier"  class="vb-stat-val"></div><div class="vb-stat-lbl">Risk Tier</div></div>
+            <div class="vb-stat"><div id="vb-agree" class="vb-stat-val"></div><div class="vb-stat-lbl">Agreement</div></div>
+          </div>
+        </div>
+
+        <!-- Top deductions -->
+        <div class="section-title">
+          <h3>Top Deduction Points</h3>
+          <span>Specific violations found in the content</span>
+        </div>
+        <div class="panel" style="padding:20px 24px;">
+          <div id="deductions-list"></div>
+        </div>
+
+        <!-- Judge cards -->
+        <div class="section-title">
+          <h3>Expert Module Verdicts</h3>
+          <span>Independent assessment from each judge</span>
+        </div>
+        <div class="grid-3" id="judges-grid"></div>
+
+        <!-- Conditions -->
+        <div id="conditions-section" class="panel" style="padding:20px 24px; margin-top:20px;">
+          <div class="mini-label" style="margin-bottom:10px;">Deployment Conditions</div>
+          <div id="conditions-list"></div>
+        </div>
+
+        <!-- Consensus / Dissent -->
+        <div class="section-title">
+          <h3>Council Findings</h3>
+        </div>
+        <div class="two-col">
+          <div class="panel" style="padding:20px 24px;">
+            <div class="mini-label" style="margin-bottom:10px;">Consensus</div>
+            <div id="consensus-list"></div>
+          </div>
+          <div class="panel" style="padding:20px 24px;">
+            <div class="mini-label" style="margin-bottom:10px;">Dissenting Views</div>
+            <div id="dissent-list"></div>
+          </div>
+        </div>
+
+        <!-- Critiques -->
+        <div class="section-title">
+          <h3>Cross-Judge Critiques</h3>
+          <button class="btn-toggle" id="critiques-toggle-btn" onclick="toggleCritiques()">Show ▾</button>
+        </div>
+        <div id="critiques-body" class="critiques-grid hidden"></div>
+
+        <!-- Synthesis -->
+        <div class="section-title">
+          <h3>Council Synthesis</h3>
+        </div>
+        <div class="panel" style="padding:24px;">
+          <p id="synthesis-text" style="margin:0; line-height:1.7; color:var(--muted);"></p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

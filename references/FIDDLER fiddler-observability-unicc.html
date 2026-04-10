@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agentic Observability & the UNICC AI Safety Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(87,6,140,0.15); }
+  .tab-active { background: linear-gradient(135deg, #57068c, #330662); color: white; }
+  .tab-inactive { color: #6b7280; background: white; }
+  .tab-inactive:hover { background: #f5f3ff; color: #57068c; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .expand-btn { cursor: pointer; }
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .accordion-content.open { max-height: 1000px; }
+  .border-purple { border-left: 4px solid #57068c; }
+  .border-blue { border-left: 4px solid #3b82f6; }
+  .border-green { border-left: 4px solid #22c55e; }
+  .border-orange { border-left: 4px solid #f97316; }
+  .border-red { border-left: 4px solid #ef4444; }
+  .gradient-box { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }
+  .header-gradient { background: linear-gradient(135deg, #57068c 0%, #330662 100%); }
+  .relevance-high { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .relevance-med { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+  .relevance-tag { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Header -->
+<header class="header-gradient text-white py-10 px-6">
+  <div class="max-w-6xl mx-auto">
+    <p class="text-purple-200 text-sm font-medium uppercase tracking-widest mb-2">Reading Analysis · AI Safety & Observability</p>
+    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-3">
+      Rethinking Observability<br/>for the Age of AI Agents
+    </h1>
+    <p class="text-xl font-light text-purple-100 mb-4">Fiddler AI · Industry Guide — Applicability to the UNICC AI Safety Lab Project</p>
+    <p class="text-sm text-purple-200">Dr. Andrés Fortino &nbsp;|&nbsp; New York University &nbsp;|&nbsp; MASY GC-4100 Spring 2026</p>
+  </div>
+</header>
+
+<!-- Sticky Nav -->
+<nav class="sticky top-0 z-50 bg-white shadow-md">
+  <div class="max-w-6xl mx-auto flex overflow-x-auto">
+    <button onclick="showTab(0)" id="tab0" class="tab-active flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">📋 Overview</button>
+    <button onclick="showTab(1)" id="tab1" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">🔍 Core Concepts</button>
+    <button onclick="showTab(2)" id="tab2" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">🔗 UNICC Connections</button>
+    <button onclick="showTab(3)" id="tab3" class="tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all">🎯 Project Implications</button>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10">
+
+  <!-- TAB 0: OVERVIEW -->
+  <div id="section0" class="section active">
+
+    <!-- Why This Article -->
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6 card-hover">
+      <h2 class="text-2xl font-bold text-purple-900 mb-4">🌐 Why This Article Matters for Your Capstone</h2>
+      <p class="text-gray-700 leading-relaxed mb-4">
+        The Fiddler guide tackles a deceptively simple question: once AI agents are deployed, how do you know they are actually working — safely, correctly, and within the rules? As organizations move from experimenting with AI to running it in production, traditional monitoring tools no longer cut it. AI agents are dynamic, multi-step, and multi-system; a single failure can cascade invisibly before anyone notices.
+      </p>
+      <p class="text-gray-700 leading-relaxed">
+        This is precisely the problem your UNICC capstone project is designed to solve — but at the evaluation and testing stage, <em>before</em> deployment. Understanding how practitioners think about observability in live agentic systems gives your team the conceptual vocabulary and technical framing to build a more rigorous AI Safety Lab.
+      </p>
+    </div>
+
+    <!-- Article at a Glance -->
+    <div class="grid md:grid-cols-3 gap-5 mb-6">
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-purple border-l-4">
+        <div class="text-3xl mb-3">🧩</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Core Problem</h3>
+        <p class="text-gray-600 text-sm">Multi-agent AI systems grow exponentially complex. Without the right observability, diagnosing failures becomes guesswork — and trust collapses.</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-blue border-l-4">
+        <div class="text-3xl mb-3">📡</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Key Insight</h3>
+        <p class="text-gray-600 text-sm">You cannot trust what you cannot see. Observability must move beyond logging <em>what happened</em> to revealing <em>why</em> — across every agent boundary, tool call, and decision point.</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover border-green border-l-4">
+        <div class="text-3xl mb-3">🏗️</div>
+        <h3 class="font-bold text-purple-900 mb-2">The Solution Framework</h3>
+        <p class="text-gray-600 text-sm">Aggregation-first analysis, context-rich execution traces, multi-agent scalability, and built-in security/compliance alignment define the next generation of AI monitoring.</p>
+      </div>
+    </div>
+
+    <!-- Relevance Summary Box -->
+    <div class="gradient-box rounded-2xl p-8 mb-6">
+      <h2 class="text-xl font-bold text-purple-900 mb-4">📌 Relevance at a Glance</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <p class="font-semibold text-gray-800 mb-1">Source</p>
+          <p class="text-gray-600 text-sm">Fiddler AI — <em>Rethinking Observability for the Age of AI Agents</em> (2025 Industry Guide)</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <p class="font-semibold text-gray-800 mb-1">Audience</p>
+          <p class="text-gray-600 text-sm">Enterprise AI/ML teams deploying LLM-powered agents at scale in regulated environments</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <p class="font-semibold text-gray-800 mb-1">Central Thesis</p>
+          <p class="text-gray-600 text-sm">Traditional monitoring is insufficient for agentic AI; a new observability paradigm built on aggregation, context, and compliance is required</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <p class="font-semibold text-gray-800 mb-1">Capstone Relevance</p>
+          <p class="text-gray-600 text-sm"><span class="relevance-tag relevance-high">HIGH</span> — directly informs the problem your AI Safety Lab is solving and the architecture you need to build</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div class="bg-white rounded-2xl shadow-md p-8 card-hover">
+      <h2 class="text-xl font-bold text-purple-900 mb-5">🎓 What You Should Take Away</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">1</div><p class="text-gray-700 text-sm">Understand why AI agent systems require a fundamentally different monitoring approach than traditional software</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">2</div><p class="text-gray-700 text-sm">Recognize the architecture of multi-agent hierarchies and why end-to-end traceability is essential for safety</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">3</div><p class="text-gray-700 text-sm">Connect observability concepts (spans, aggregation, guardrails) to the council-of-experts architecture in your capstone</p></div>
+        <div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 font-bold text-sm flex items-center justify-center flex-shrink-0">4</div><p class="text-gray-700 text-sm">Appreciate the governance, security, and compliance dimensions that UNICC's institutional context demands</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 1: CORE CONCEPTS -->
+  <div id="section1" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">🔍 Core Concepts from the Article</h2>
+      <p class="text-gray-600 mb-6">Each section below unpacks a key idea from the Fiddler guide and why it is conceptually important.</p>
+
+      <!-- Accordion Items -->
+      <div class="space-y-4">
+
+        <!-- Concept 1 -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="expand-btn w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left" onclick="toggleAccordion('c1')">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🌪️</span>
+              <span class="font-semibold text-gray-800">Taming Multi-Agent Chaos</span>
+            </div>
+            <span id="c1-icon" class="text-purple-700 font-bold text-lg">+</span>
+          </button>
+          <div id="c1" class="accordion-content">
+            <div class="p-5 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Single-agent systems are already complex — they manage varied inputs, handle hallucinations, and integrate with external services. Multi-agent systems don't just add complexity linearly; they multiply it <strong>exponentially</strong>. Every additional agent introduces new states, interaction paths, and failure modes.</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">The guide makes a critical point: <em>building</em> the agent is not enough. Reliability requires monitoring every handoff, every intermediate decision, and every integration point. Without granular visibility across agent boundaries, diagnosing issues becomes guesswork.</p>
+              <div class="bg-purple-50 rounded-lg p-4 mt-3">
+                <p class="text-purple-800 text-sm font-medium">💡 Key Takeaway: Complexity is not additive — it is exponential. Your Safety Lab must account for this when evaluating AI agents that may themselves be multi-step or multi-agent systems.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 2 -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="expand-btn w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left" onclick="toggleAccordion('c2')">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">📊</span>
+              <span class="font-semibold text-gray-800">Agentic Observability: A New Paradigm</span>
+            </div>
+            <span id="c2-icon" class="text-purple-700 font-bold text-lg">+</span>
+          </button>
+          <div id="c2" class="accordion-content">
+            <div class="p-5 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Traditional monitoring captures <em>what happened</em> — logs, metrics, traces. But for AI agents that dynamically generate responses, call tools, and interact with other agents in real time, this is insufficient. You also need to understand <em>why</em> something happened.</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Agentic Observability sits at the intersection of three disciplines: <strong>Application Performance Management</strong> (infrastructure signals), <strong>Model Performance Management</strong> (ML/LLM behavior like hallucination detection, drift, bias), and the orchestration of multi-agent interactions.</p>
+              <div class="grid md:grid-cols-3 gap-3 mt-4">
+                <div class="bg-blue-50 rounded-lg p-3 text-center"><p class="text-blue-800 text-xs font-bold mb-1">APM Layer</p><p class="text-blue-600 text-xs">API response times, error rates, infrastructure utilization</p></div>
+                <div class="bg-purple-50 rounded-lg p-3 text-center"><p class="text-purple-800 text-xs font-bold mb-1">Agentic Layer</p><p class="text-purple-600 text-xs">Decision paths, tool calls, agent interactions & handoffs</p></div>
+                <div class="bg-green-50 rounded-lg p-3 text-center"><p class="text-green-800 text-xs font-bold mb-1">Model Layer</p><p class="text-green-600 text-xs">Hallucination detection, prompt injection, data quality</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 3 -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="expand-btn w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left" onclick="toggleAccordion('c3')">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">📈</span>
+              <span class="font-semibold text-gray-800">Aggregation-First Mindset</span>
+            </div>
+            <span id="c3-icon" class="text-purple-700 font-bold text-lg">+</span>
+          </button>
+          <div id="c3" class="accordion-content">
+            <div class="p-5 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Enterprise AI agents generate <strong>millions of spans</strong> (individual records of each model call, API request, or tool invocation). Manually sifting through raw logs to find patterns doesn't scale. The guide argues for an aggregation-first approach: score each span against meaningful metrics (faithfulness, safety, PII/PHI detection), then aggregate across time intervals.</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">The result is a time-series view where anomalies stand out immediately — turning observability from a <em>forensic exercise</em> into a <em>proactive capability</em>.</p>
+              <p class="text-gray-700 text-sm leading-relaxed">Different stakeholder teams also need different aggregations: a fraud team prioritizes false positives, a compliance team prioritizes safety scores, a product team tracks faithfulness. Flexibility in metric definition is essential.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 4 -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="expand-btn w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left" onclick="toggleAccordion('c4')">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🗺️</span>
+              <span class="font-semibold text-gray-800">End-to-End Traceability Across the Agent Hierarchy</span>
+            </div>
+            <span id="c4-icon" class="text-purple-700 font-bold text-lg">+</span>
+          </button>
+          <div id="c4" class="accordion-content">
+            <div class="p-5 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">An agentic workflow may appear simple on the surface but involve dozens of steps, sub-agents, API calls, and model invocations underneath. The guide's travel booking example is instructive: a supervisor agent coordinates flight, hotel, and car rental agents — each with their own API sub-agents. A failure anywhere in that hierarchy may be invisible without end-to-end traceability.</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Full observability means capturing every action, input, and output along the entire execution path — visualized as a tree — so teams can spot hotspots and trace any failure to its exact origin.</p>
+              <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mt-2">
+                <p class="text-orange-800 text-sm">⚠️ Without this capability, teams can see that something went wrong, but not <em>where</em> or <em>why</em> — undermining trust in the entire system.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 5 -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+          <button class="expand-btn w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-purple-50 text-left" onclick="toggleAccordion('c5')">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🔐</span>
+              <span class="font-semibold text-gray-800">Security & Compliance in Agentic Observability</span>
+            </div>
+            <span id="c5-icon" class="text-purple-700 font-bold text-lg">+</span>
+          </button>
+          <div id="c5" class="accordion-content">
+            <div class="p-5 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">In regulated or institutional environments, compliance is not optional. The guide argues observability infrastructure must be held to the <strong>same trust standards</strong> as the AI systems it monitors. This includes operating within private cloud or on-premises environments, encrypting data at rest and in transit, role-based access controls, and strict data isolation.</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">Guardrails — real-time checks that intercept unsafe outputs before they reach users — are highlighted as critical. Examples include PII/PHI leakage detection, prompt injection and jailbreak interception, toxicity scoring, and faithfulness evaluation.</p>
+              <div class="grid md:grid-cols-2 gap-3 mt-3">
+                <div class="bg-red-50 rounded-lg p-3"><p class="text-red-800 text-xs font-bold mb-1">🚨 Risks Guardrails Address</p><p class="text-red-600 text-xs">PII/PHI leakage · Prompt injection · Jailbreaks · Toxic outputs · Hallucinations</p></div>
+                <div class="bg-green-50 rounded-lg p-3"><p class="text-green-800 text-xs font-bold mb-1">✅ Infrastructure Requirements</p><p class="text-green-600 text-xs">On-premises/VPC · Encryption · RBAC · Data isolation · Audit logs</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: UNICC CONNECTIONS -->
+  <div id="section2" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">🔗 How This Maps to the UNICC AI Safety Lab</h2>
+      <p class="text-gray-600 mb-6">The Fiddler guide describes what enterprises need <em>after</em> deploying AI agents. Your capstone builds what UNICC needs <em>before</em> deployment — making these two efforts directly complementary. Here is how each major concept connects.</p>
+
+      <div class="space-y-5">
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-purple border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">The "You Can't Trust What You Can't See" Problem</h3>
+            <span class="relevance-tag relevance-high ml-3 flex-shrink-0">Direct Match</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">Fiddler's central thesis — that AI agent behavior is opaque by default, and trust requires systematic visibility — is <strong>the exact problem your Safety Lab addresses</strong>. UNICC cannot trust an AI agent deployed in the Sandbox if it cannot be evaluated from multiple perspectives before it goes live. Your council-of-experts architecture is a pre-deployment answer to the same challenge Fiddler's platform addresses post-deployment.</p>
+          <div class="bg-purple-50 rounded-lg p-3 text-sm text-purple-800">📌 Capstone Connection: The multi-module inference ensemble provides the "multiple perspectives" that replace single-point-of-view black-box evaluation.</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-blue border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Multi-Agent Complexity → Council-of-Experts Architecture</h3>
+            <span class="relevance-tag relevance-high ml-3 flex-shrink-0">Direct Match</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">The guide's description of multi-agent hierarchies (supervisor → specialist → API agents) mirrors the architecture your team is building. Your three integrated expert modules function like specialized sub-agents, each with distinct evaluation logic, coordinated by an orchestration layer that synthesizes their findings — exactly the "agent hierarchy" Fiddler describes needing observability across.</p>
+          <div class="bg-blue-50 rounded-lg p-3 text-sm text-blue-800">📌 Capstone Connection: Project 2 (Fine-tuning the SLM) directly implements the multi-module coordination and critique-and-synthesis mechanism the guide says is essential.</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-green border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Aggregation-First Analysis → Ensemble Synthesis</h3>
+            <span class="relevance-tag relevance-high ml-3 flex-shrink-0">Strong Parallel</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">The guide advocates moving from raw span data to aggregated, scored signals. Your capstone does the same thing at the evaluation level: instead of returning one raw safety score from one model, your ensemble aggregates assessments from three independent modules, scores them, surfaces disagreements, and synthesizes a final recommendation. This is aggregation-first thinking applied to AI safety testing.</p>
+          <div class="bg-green-50 rounded-lg p-3 text-sm text-green-800">📌 Capstone Connection: Project 3 (Testing & UX) must present these aggregated multi-module assessments in a way that is immediately interpretable — not raw model outputs.</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-orange border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Security, Compliance & On-Premises Deployment → DGX Spark Cluster</h3>
+            <span class="relevance-tag relevance-high ml-3 flex-shrink-0">Direct Match</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">Fiddler explicitly calls out the need to operate within a customer's VPC with role-based access, encryption, and data isolation for regulated environments. UNICC — as a UN-system organization — represents precisely this kind of institutional context. The NYU DGX Spark cluster answers the same requirement: an on-premises, auditable, governance-aligned compute environment that does not rely on external cloud APIs.</p>
+          <div class="bg-orange-50 rounded-lg p-3 text-sm text-orange-800">📌 Capstone Connection: Project 1 (Platform & Research) must establish security configurations, access controls, and partitioning that meet these institutional trust standards.</div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-red border-l-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-bold text-gray-800 text-lg">Guardrails & Real-Time Risk Detection → Pre-Deployment Safety Testing</h3>
+            <span class="relevance-tag relevance-med ml-3 flex-shrink-0">Adjacent Concept</span>
+          </div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-3">Fiddler's guardrails intercept unsafe outputs in production (PII leakage, jailbreaks, toxicity) in real time. Your Safety Lab does something analogous at the testing stage: systematically evaluating candidate AI agents for these same failure modes before they ever reach production. The categories of risk are identical; the timing differs. Your lab is the guardrail that prevents unsafe agents from entering the Sandbox at all.</p>
+          <div class="bg-red-50 rounded-lg p-3 text-sm text-red-800">📌 Capstone Connection: Use the guardrail categories (hallucination, PII, prompt injection, toxicity, faithfulness) as a checklist for the types of safety dimensions your expert modules should evaluate.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PROJECT IMPLICATIONS -->
+  <div id="section3" class="section">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-6">
+      <h2 class="text-2xl font-bold text-purple-900 mb-2">🎯 Implications for Each Capstone Project</h2>
+      <p class="text-gray-600 mb-6">Here is what each team member should specifically take from this article to strengthen their individual project component.</p>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-gradient-to-b from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
+          <div class="text-3xl mb-3">🏗️</div>
+          <h3 class="font-bold text-purple-900 text-lg mb-3">Project 1<br/><span class="font-normal text-base">Research & Platform</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Use the three-layer framework (APM / Agentic / Model) to structure your literature review on monitoring architectures</li>
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Document how the DGX Spark cluster configuration mirrors the VPC/on-premises requirements Fiddler identifies for institutional deployments</li>
+            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold mt-0.5">→</span>Build your FRS around the four principles of next-gen observability: aggregation, context, scalability, and compliance alignment</li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-b from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+          <div class="text-3xl mb-3">🧠</div>
+          <h3 class="font-bold text-blue-900 text-lg mb-3">Project 2<br/><span class="font-normal text-base">SLM Fine-Tuning & Council</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Treat each expert module as an "agent" in its own right — design the coordination mechanism so disagreements between modules are surfaced, not suppressed</li>
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Use Fiddler's guardrail taxonomy (PII, hallucination, prompt injection, toxicity, faithfulness) to define the evaluation dimensions each module should assess</li>
+            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>Design the synthesis mechanism to produce a scored, aggregated output — not just a narrative — so the result is interpretable and auditable</li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-b from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+          <div class="text-3xl mb-3">🖥️</div>
+          <h3 class="font-bold text-green-900 text-lg mb-3">Project 3<br/><span class="font-normal text-base">Testing, UX & Integration</span></h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Design the UI to display assessments in aggregated, time-series-style views — not raw model outputs — so anomalies are immediately visible</li>
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Build a visualization that shows the "execution tree" of how each expert module reached its assessment — mirroring the trace-view Fiddler describes for end-to-end agent visibility</li>
+            <li class="flex items-start gap-2"><span class="text-green-500 font-bold mt-0.5">→</span>Implement monitoring and logging of the Safety Lab's own performance as a system — what the guide calls "observability of the observability layer"</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Critical Questions -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-7 mb-6">
+        <h3 class="font-bold text-purple-900 text-xl mb-4">❓ Critical Questions This Article Raises for Your Team</h3>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q1</span>
+            <p class="text-gray-700 text-sm">If the AI agents you are evaluating are themselves multi-agent systems, how will your Safety Lab trace and assess behavior at the sub-agent level — or will you treat the agent as a black box at the boundary?</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q2</span>
+            <p class="text-gray-700 text-sm">How will you handle disagreement between your three expert modules? The guide emphasizes that surfacing disagreement is a feature — not a flaw — because it drives more thoughtful human oversight.</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q3</span>
+            <p class="text-gray-700 text-sm">What specific safety metrics will your ensemble score against? The guide's list (faithfulness, PII/PHI, toxicity, prompt injection, hallucination) is a strong starting point — how does this map to UNICC's institutional risk thresholds?</p>
+          </div>
+          <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+            <span class="text-purple-600 font-bold text-lg flex-shrink-0">Q4</span>
+            <p class="text-gray-700 text-sm">The guide stresses that compliance requirements differ by organization. What are UNICC's specific thresholds and which of them must be configurable within your Safety Lab's interface?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Line -->
+      <div class="header-gradient rounded-2xl p-7 text-white">
+        <h3 class="text-xl font-bold mb-3">🚀 The Bottom Line for Your Capstone</h3>
+        <p class="text-purple-100 leading-relaxed mb-3">This Fiddler guide confirms that what you are building is genuinely important and technically challenging. The industry is racing to solve AI observability in production; you are solving the preceding problem — how to evaluate AI agents rigorously <em>before</em> production — using exactly the same principles: multiple independent assessment perspectives, aggregated and scored outputs, end-to-end traceability, and governance-aligned infrastructure.</p>
+        <p class="text-purple-100 leading-relaxed">The guide's central message applies directly to your competition: <strong>"The power of AI agents isn't just in what they can do — it's in knowing that they're doing it right."</strong> Your Safety Lab is the mechanism that gives UNICC that confidence.</p>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="bg-white border-t border-gray-200 mt-10 py-6 px-4 text-center text-sm text-gray-400">
+  Dr. Andrés Fortino &nbsp;|&nbsp; NYU School of Professional Studies &nbsp;|&nbsp; MASY GC-4100 Applied Project Capstone · Spring 2026<br/>
+  <span class="text-xs">Source: Fiddler AI — <em>Rethinking Observability for the Age of AI Agents</em></span>
+</footer>
+
+<script>
+  function showTab(index) {
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('section' + i).classList.remove('active');
+      document.getElementById('tab' + i).className = 'tab-inactive flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all';
+    }
+    document.getElementById('section' + index).classList.add('active');
+    document.getElementById('tab' + index).className = 'tab-active flex-1 min-w-max px-5 py-4 text-sm font-semibold transition-all';
+  }
+
+  function toggleAccordion(id) {
+    const content = document.getElementById(id);
+    const icon = document.getElementById(id + '-icon');
+    const isOpen = content.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('[id$="-icon"]').forEach(el => el.textContent = '+');
+    if (!isOpen) {
+      content.classList.add('open');
+      icon.textContent = '−';
+    }
+  }
+</script>
+</body>
+</html>

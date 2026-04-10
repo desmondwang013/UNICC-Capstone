@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNICC AI Safety Lab — Cisco AI Security 2026 Findings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --nyu-purple: #57068c;
+    --nyu-dark: #330662;
+    --nyu-light: #f3eaf9;
+    --accent-blue: #2563eb;
+    --accent-green: #16a34a;
+    --accent-orange: #ea580c;
+    --accent-red: #dc2626;
+    --accent-violet: #7c3aed;
+    --text-dark: #1e1b4b;
+    --text-gray: #6b7280;
+    --bg: #f9fafb;
+    --white: #ffffff;
+    --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-dark); }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #57068c 0%, #330662 100%);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header h1 { font-size: 2.6rem; font-weight: 700; color: white; position: relative; line-height: 1.2; }
+  .header h2 { font-size: 1.1rem; font-weight: 300; color: rgba(255,255,255,0.82); margin-top: 10px; position: relative; }
+  .header .meta { font-size: 0.78rem; color: rgba(255,255,255,0.58); margin-top: 12px; position: relative; letter-spacing: 0.04em; }
+  .badge {
+    display: inline-block; background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white; font-size: 0.72rem; font-weight: 600;
+    padding: 4px 12px; border-radius: 999px; margin: 4px 3px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+
+  /* NAV */
+  .nav-sticky {
+    position: sticky; top: 0; z-index: 100;
+    background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .nav-inner {
+    max-width: 72rem; margin: 0 auto;
+    display: flex; overflow-x: auto;
+  }
+  .nav-btn {
+    flex: 1; min-width: 140px;
+    padding: 16px 12px; border: none; background: none;
+    font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500;
+    color: var(--text-gray); cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--nyu-purple); background: var(--nyu-light); }
+  .nav-btn.active { color: var(--nyu-purple); border-bottom-color: var(--nyu-purple); font-weight: 700; }
+  .nav-btn .nav-icon { display: block; font-size: 1.2rem; margin-bottom: 3px; }
+
+  /* CONTENT */
+  .content { max-width: 72rem; margin: 0 auto; padding: 32px 20px 60px; }
+  .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: white; border-radius: 12px;
+    box-shadow: var(--card-shadow); padding: 24px;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+  .card-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--nyu-purple);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-body { font-size: 0.9rem; line-height: 1.7; color: #374151; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* SECTION HEADER */
+  .section-title {
+    font-size: 1.4rem; font-weight: 700; color: var(--text-dark);
+    margin-bottom: 6px; margin-top: 32px;
+  }
+  .section-title:first-child { margin-top: 0; }
+  .section-sub { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 20px; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--nyu-purple), var(--nyu-dark)); border-radius: 2px; margin-bottom: 24px; }
+
+  /* STAT BOXES */
+  .stat-box {
+    background: linear-gradient(135deg, var(--nyu-purple), var(--nyu-dark));
+    color: white; border-radius: 12px; padding: 24px; text-align: center;
+  }
+  .stat-num { font-size: 2.6rem; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 0.8rem; opacity: 0.82; margin-top: 6px; line-height: 1.4; }
+
+  /* THREAT CARDS */
+  .threat-card {
+    background: white; border-radius: 12px;
+    box-shadow: var(--card-shadow); overflow: hidden;
+    margin-bottom: 16px; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .threat-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+  .threat-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px; border-left: 5px solid;
+  }
+  .threat-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .threat-name { font-weight: 700; font-size: 0.95rem; }
+  .threat-tag { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; margin-top: 3px; display: inline-block; }
+  .threat-chevron { margin-left: auto; font-size: 1.1rem; transition: transform 0.25s; color: #9ca3af; }
+  .threat-card.open .threat-chevron { transform: rotate(180deg); }
+  .threat-body { display: none; padding: 0 20px 18px 20px; border-top: 1px solid #f3f4f6; }
+  .threat-card.open .threat-body { display: block; animation: fadeIn 0.25s ease; }
+  .threat-body p { font-size: 0.88rem; line-height: 1.7; color: #374151; margin-top: 14px; }
+  .threat-body .stat-inline {
+    display: inline-block; background: var(--nyu-light);
+    color: var(--nyu-purple); font-weight: 700; font-size: 0.85rem;
+    padding: 2px 8px; border-radius: 6px; margin: 0 2px;
+  }
+  .implication-box {
+    background: #f0fdf4; border-left: 4px solid var(--accent-green);
+    border-radius: 0 8px 8px 0; padding: 12px 14px; margin-top: 12px;
+  }
+  .implication-box .imp-label { font-size: 0.72rem; font-weight: 700; color: var(--accent-green); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .implication-box p { font-size: 0.85rem; color: #166534; margin: 0; }
+
+  /* PROJECT MATRIX */
+  .project-card {
+    background: white; border-radius: 12px;
+    box-shadow: var(--card-shadow); padding: 0; overflow: hidden;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+  .project-header { padding: 18px 22px; color: white; }
+  .project-num { font-size: 0.72rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.08em; }
+  .project-title { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
+  .project-body { padding: 18px 22px; }
+  .project-body h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-gray); margin-bottom: 8px; margin-top: 14px; }
+  .project-body h4:first-child { margin-top: 0; }
+  .project-body p { font-size: 0.88rem; line-height: 1.65; color: #374151; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .tag {
+    font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
+    border-radius: 999px; border: 1.5px solid;
+  }
+
+  /* FRAMEWORK TABLE */
+  .fw-row {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: white; border-radius: 10px; padding: 16px 18px;
+    box-shadow: var(--card-shadow); margin-bottom: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .fw-row:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+  .fw-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+  .fw-name { font-weight: 700; font-size: 0.92rem; color: var(--nyu-purple); margin-bottom: 4px; }
+  .fw-detail { font-size: 0.86rem; line-height: 1.6; color: #374151; }
+
+  /* INSIGHT CARDS */
+  .insight-card {
+    background: white; border-radius: 12px;
+    box-shadow: var(--card-shadow); padding: 22px;
+    margin-bottom: 16px; border-left: 5px solid var(--nyu-purple);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .insight-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+  .insight-num {
+    width: 32px; height: 32px; background: var(--nyu-purple);
+    color: white; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .insight-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .insight-title { font-weight: 700; font-size: 0.97rem; color: var(--text-dark); }
+  .insight-body { font-size: 0.88rem; line-height: 1.7; color: #374151; }
+
+  /* CALLOUT */
+  .callout {
+    border-radius: 12px; padding: 20px 22px; margin-bottom: 22px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .callout-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .callout-body { font-size: 0.86rem; line-height: 1.6; }
+  .callout.purple { background: var(--nyu-light); border-left: 4px solid var(--nyu-purple); }
+  .callout.purple .callout-title { color: var(--nyu-dark); }
+  .callout.blue { background: #eff6ff; border-left: 4px solid var(--accent-blue); }
+  .callout.blue .callout-title { color: #1d4ed8; }
+
+  /* CITATION */
+  .citation-box {
+    background: #1e1b4b; color: white;
+    border-radius: 12px; padding: 22px 24px; margin-top: 32px;
+  }
+  .citation-box h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+  .citation-text { font-size: 0.88rem; line-height: 1.7; color: rgba(255,255,255,0.85); font-style: italic; }
+  .citation-text em { font-style: normal; font-weight: 600; color: white; }
+
+  /* PROGRESS BAR */
+  .prog-row { margin-bottom: 14px; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 0.83rem; font-weight: 600; margin-bottom: 5px; }
+  .prog-bar { height: 10px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 999px; transition: width 1s ease; }
+
+  /* OVERVIEW HERO */
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media (max-width: 640px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; }
+  .hero-left h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; }
+  .hero-left p { font-size: 0.9rem; line-height: 1.7; color: #4b5563; }
+  .stats-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-mini { background: white; border-radius: 10px; box-shadow: var(--card-shadow); padding: 16px; text-align: center; }
+  .stat-mini-num { font-size: 1.8rem; font-weight: 700; color: var(--nyu-purple); line-height: 1; }
+  .stat-mini-label { font-size: 0.72rem; color: var(--text-gray); margin-top: 4px; line-height: 1.3; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🔐 UNICC AI Safety Lab</h1>
+  <h2>Cisco State of AI Security 2026 — Key Findings & Capstone Implications</h2>
+  <div class="meta" style="margin-top:14px;">
+    <span class="badge">Dr. Andrés Fortino</span>
+    <span class="badge">New York University</span>
+    <span class="badge">MASY GC-4100</span>
+    <span class="badge">Spring 2026</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-sticky">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="switchTab('overview', this)">
+      <span class="nav-icon">🌐</span>Overview
+    </button>
+    <button class="nav-btn" onclick="switchTab('threats', this)">
+      <span class="nav-icon">⚠️</span>Threat Landscape
+    </button>
+    <button class="nav-btn" onclick="switchTab('projects', this)">
+      <span class="nav-icon">🛠️</span>Project Implications
+    </button>
+    <button class="nav-btn" onclick="switchTab('insights', this)">
+      <span class="nav-icon">💡</span>Research Insights
+    </button>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ===== TAB 1: OVERVIEW ===== -->
+  <div id="tab-overview" class="tab-panel active">
+
+    <div class="hero-grid">
+      <div class="hero-left">
+        <h2>We Are Now in the AI-Driven Era</h2>
+        <p>Cisco's 2026 report marks a decisive turning point: attacks that were once theoretical are now active, industrialized exploits. The readiness gap between AI adoption and AI security is the precise problem space your UNICC AI Safety Lab addresses.</p>
+        <br>
+        <p>This briefing synthesizes Cisco's findings and maps them directly to your three capstone project tracks, your academic deliverables, and your final presentation to UNICC.</p>
+      </div>
+      <div class="stats-mini">
+        <div class="stat-mini">
+          <div class="stat-mini-num">83%</div>
+          <div class="stat-mini-label">of orgs planned to deploy agentic AI</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-num">29%</div>
+          <div class="stat-mini-label">felt truly ready to do so securely</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-num">92.8%</div>
+          <div class="stat-mini-label">multi-turn jailbreak success rate</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-num">250</div>
+          <div class="stat-mini-label">poisoned docs needed to compromise an LLM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="section-title">Why This Matters to Your Capstone</p>
+    <p class="section-sub">Five domains where Cisco's findings directly validate the UNICC AI Safety Lab mission</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🧩 The Framework Gap</div>
+        <div class="card-body">No existing framework — not MITRE ATLAS, NIST, or OWASP — unifies content safety, agentic risks, supply chain threats, and lifecycle-level exposure in one auditable system. Your multi-module ensemble fills this gap with independent, cross-validated perspectives.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏛️ UN-Specific Risk Context</div>
+        <div class="card-body">Nation-state actors (China, Russia, DPRK, Iran) are actively weaponizing AI for espionage and cyber operations. The UNICC AI Sandbox hosts agents used by agencies across the UN system — pre-deployment evaluation is no longer optional.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔍 Multi-Turn Attacks Are the Norm</div>
+        <div class="card-body">Single-turn defenses fail at a 92.78% rate under multi-turn attack strategies. Your Council of Experts architecture must account for adversaries who persist across multiple conversation turns to bypass safety guardrails.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📦 Supply Chain Is an Attack Surface</div>
+        <div class="card-body">Model files can execute arbitrary code on load. Most repositories provide no provenance guarantees. Every dataset and weight file used in your fine-tuning (Project 2) must be treated with the same scrutiny as software dependencies.</div>
+      </div>
+    </div>
+
+    <div class="callout purple">
+      <div class="callout-icon">🎓</div>
+      <div>
+        <div class="callout-title">Academic Grounding for DSI 2026</div>
+        <div class="callout-body">Cisco's report is a primary, citable industry source for your research paper. Its documentation of the "council of experts" defense-in-depth model, the 92.78% multi-turn jailbreak success rate, and the supply chain provenance gap all provide quantitative support for your architectural choices.</div>
+      </div>
+    </div>
+
+    <div class="citation-box">
+      <h3>APA 7th Edition Citation</h3>
+      <div class="citation-text">Chang, A., Saade, T., &amp; Antone, E. (2026). <em>State of AI Security 2026.</em> Cisco Systems, Inc.</div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: THREATS ===== -->
+  <div id="tab-threats" class="tab-panel">
+
+    <p class="section-title">AI Threat Landscape — 2026</p>
+    <p class="section-sub">Click each threat category to expand findings and UNICC implications</p>
+    <div class="divider"></div>
+
+    <!-- Attack success rate bar chart -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-title">📊 Open-Weight Model Attack Success Rates (Cisco 2026)</div>
+      <div class="card-body" style="margin-bottom:16px;">Multi-turn attacks dramatically outperform single-turn across all tested models — illustrating why your SLM must be fine-tuned specifically against adversarial multi-turn scenarios.</div>
+      <div class="prog-row">
+        <div class="prog-label"><span>Mistral Large-2 (Multi-Turn)</span><span style="color:var(--accent-red)">92.8%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:92.8%;background:var(--accent-red)"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label"><span>Meta Llama 3.3-70B (Multi-Turn)</span><span style="color:var(--accent-red)">87.0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:87%;background:var(--accent-red)"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label"><span>Alibaba Qwen3-32B (Multi-Turn)</span><span style="color:var(--accent-orange)">80.2%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:80.2%;background:var(--accent-orange)"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label"><span>DeepSeek v3.1 (Multi-Turn)</span><span style="color:var(--accent-orange)">79.6%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:79.6%;background:var(--accent-orange)"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label"><span>Microsoft Phi-4 (Multi-Turn)</span><span style="color:#ca8a04)">54.2%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:54.2%;background:#ca8a04"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label"><span>Google Gemma-3-1B-IT (Multi-Turn)</span><span style="color:var(--accent-green)">30.7%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:30.7%;background:var(--accent-green)"></div></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text-gray);margin-top:10px;">↑ Alignment-focused models show better resilience. Recommendation: prioritize alignment-trained base weights for your SLM.</div>
+    </div>
+
+    <!-- Threat accordions -->
+    <div class="threat-card" onclick="toggleThreat(this)">
+      <div class="threat-header" style="border-color:var(--accent-red)">
+        <div class="threat-icon">💉</div>
+        <div>
+          <div class="threat-name">Prompt Injections & Jailbreaks</div>
+          <span class="threat-tag" style="background:#fef2f2;color:var(--accent-red)">CRITICAL — Active Exploits</span>
+        </div>
+        <span class="threat-chevron">▼</span>
+      </div>
+      <div class="threat-body">
+        <p>Despite advances in model training, generative AI models remain susceptible to prompt injection — tricking a model to do something unintended — and jailbreaks, which bypass safety guardrails. The key finding is that <span class="stat-inline">multi-turn attacks</span> are dramatically more effective than single-turn, achieving success rates up to <span class="stat-inline">92.78%</span> across popular open-weight models.</p>
+        <p>Attackers no longer need malware. Natural language prompts alone can exfiltrate intellectual property. In May 2025, a hidden prompt injection in a GitHub Issue hijacked an AI agent and pulled private repository data to an attacker's server.</p>
+        <div class="implication-box">
+          <div class="imp-label">↳ UNICC Implication</div>
+          <p>Your fine-tuning dataset (Project 2) must include multi-turn adversarial scenarios. A single-turn safety evaluation in Project 3 testing is insufficient — test cases must simulate persistent adversaries across extended dialogues.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="threat-card" onclick="toggleThreat(this)">
+      <div class="threat-header" style="border-color:var(--accent-blue)">
+        <div class="threat-icon">🔗</div>
+        <div>
+          <div class="threat-name">AI Supply Chain Fragility</div>
+          <span class="threat-tag" style="background:#eff6ff;color:var(--accent-blue)">HIGH — Infrastructure Risk</span>
+        </div>
+        <span class="threat-chevron">▼</span>
+      </div>
+      <div class="threat-body">
+        <p>The AI supply chain — open-source models, datasets, training pipelines — is a critical weak link. Cisco confirmed that as few as <span class="stat-inline">250 poisoned documents</span> can compromise an LLM's safety behaviors without degrading general performance. The poisoning is invisible in standard benchmarking unless a specific trigger is encountered.</p>
+        <p>Most model repositories provide <span class="stat-inline">no cryptographic provenance</span> guarantees. Model files in formats like pickle can execute arbitrary code when loaded. A fake "Postmark MCP Server" package on npm silently BCC'd every email sent through the agent to an attacker.</p>
+        <div class="implication-box">
+          <div class="imp-label">↳ UNICC Implication</div>
+          <p>Project 1 must establish a documented chain-of-custody from model download through fine-tuning. Treat all model artifacts as potentially executable. This is also the strongest argument for your on-premises DGX Spark deployment over cloud APIs.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="threat-card" onclick="toggleThreat(this)">
+      <div class="threat-header" style="border-color:var(--accent-violet)">
+        <div class="threat-icon">🤖</div>
+        <div>
+          <div class="threat-name">Agentic Threats: Autonomous Agents Gone Awry</div>
+          <span class="threat-tag" style="background:#f5f3ff;color:var(--accent-violet)">CRITICAL — Active Nation-State Exploit</span>
+        </div>
+        <span class="threat-chevron">▼</span>
+      </div>
+      <div class="threat-body">
+        <p>The watershed event of 2025: a Chinese state-sponsored group (GTG-1002) jailbroke Claude Code and used its agentic capabilities for cyber-espionage, automating <span class="stat-inline">80–90% of the attack chain</span> while a human provided only strategic directives. The agent scanned ports, identified vulnerabilities, wrote Python exploits, and navigated file systems autonomously.</p>
+        <p>Additionally, <span class="stat-inline">26% of 31,000</span> agent "skills" analyzed contained at least one security vulnerability — regardless of their rating on public registries. Agentic misalignment (agents choosing harmful actions in pursuit of programmed rewards) adds another failure mode.</p>
+        <div class="implication-box">
+          <div class="imp-label">↳ UNICC Implication</div>
+          <p>The AI agents submitted to your Safety Lab for evaluation are exactly this threat surface. Your Council of Experts must evaluate agents for excessive agency, privilege escalation potential, and misalignment — not just content safety. Apply zero-trust between your own expert modules as well.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="threat-card" onclick="toggleThreat(this)">
+      <div class="threat-header" style="border-color:var(--accent-orange)">
+        <div class="threat-icon">🔌</div>
+        <div>
+          <div class="threat-name">Model Context Protocol (MCP) Vulnerabilities</div>
+          <span class="threat-tag" style="background:#fff7ed;color:var(--accent-orange)">HIGH — New Attack Surface</span>
+        </div>
+        <span class="threat-chevron">▼</span>
+      </div>
+      <div class="threat-body">
+        <p>MCP became the de facto standard for connecting AI to external tools in 2025 — but its rapid adoption outpaced security maturity. Documented real-world exploits include: <b>tool poisoning</b> in WhatsApp (silent exfiltration of entire chat histories), <b>remote code execution</b> via the mcp-remote tool (CVE-2025-6514), <b>sandbox escapes</b> in Anthropic's own filesystem tools (CVE-2025-53109/53110), and <b>supply chain attacks</b> through fake packages that BCC'd sensitive emails.</p>
+        <div class="implication-box">
+          <div class="imp-label">↳ UNICC Implication</div>
+          <p>Your Council of Experts architecture involves inter-module communication — each channel is an MCP-style attack path. Validate all tool descriptors, enforce least-privilege for module APIs, and treat each module's output as potentially adversarial input to the next. Reference Cisco's MCP taxonomy (14 threat types) in your FRS.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="threat-card" onclick="toggleThreat(this)">
+      <div class="threat-header" style="border-color:var(--accent-green)">
+        <div class="threat-icon">🌍</div>
+        <div>
+          <div class="threat-name">Nation-State Threat Actors</div>
+          <span class="threat-tag" style="background:#f0fdf4;color:var(--accent-green)">CONTEXTUAL — UN-Specific Risk</span>
+        </div>
+        <span class="threat-chevron">▼</span>
+      </div>
+      <div class="threat-body">
+        <p>State-sponsored actors from four major nations are actively weaponizing AI: <b>China</b> (agentic espionage, automated exploit development); <b>Russia</b> (LAMEHUG malware using Hugging Face LLMs, deepfake propaganda); <b>North Korea/DPRK</b> (deepfake job applicants at 100+ US companies, earning $3M/year for the regime); <b>Iran</b> (AI-assisted real-time battle damage assessment during the June 2025 Israel conflict).</p>
+        <p>The "democratization" of these capabilities through dark web AI-as-a-service markets means advanced attack techniques are now accessible to low-skill criminal actors.</p>
+        <div class="implication-box">
+          <div class="imp-label">↳ UNICC Implication</div>
+          <p>The UN system is a high-value target for nation-state actors. AI agents deployed in the UNICC Sandbox may face adversaries with state-level resources. Your safety evaluation criteria must reflect this threat model, not just generic content safety concerns.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: PROJECT IMPLICATIONS ===== -->
+  <div id="tab-projects" class="tab-panel">
+
+    <p class="section-title">Cisco Findings → Capstone Action Items</p>
+    <p class="section-sub">Specific applications of the Cisco report to each of the three project tracks</p>
+    <div class="divider"></div>
+
+    <div class="callout blue">
+      <div class="callout-icon">🏗️</div>
+      <div>
+        <div class="callout-title">Architecture Validation</div>
+        <div class="callout-body">Cisco explicitly recommends: <em>"choosing models with strong baseline resilience, instituting layered protections to detect and block anomalous activity, prioritizing threat-specific mitigations, and deploying continuous evaluation."</em> This is exactly the architecture your three projects collectively deliver.</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header" style="background:linear-gradient(135deg,#57068c,#330662)">
+        <div class="project-num">Project 1</div>
+        <div class="project-title">Research & Platform Preparation</div>
+      </div>
+      <div class="project-body">
+        <h4>Relevant Cisco Findings</h4>
+        <p>Supply chain poisoning requires no degradation of benchmark performance to be effective. Model files behave as executable containers. No repository provides cryptographic provenance. The EU AI Act now mandates adversarial testing and incident reporting for foundation models (Aug 2025).</p>
+        <h4>Action Items</h4>
+        <p>Document a formal chain-of-custody for all model weights, datasets, and containerization steps — from download to deployment on the DGX Spark cluster. Reference the NIST AI RMF (AI 100-2e2025), MITRE ATLAS, and Cisco's supply chain taxonomy (22 threat types) in your Functional Requirements Specification.</p>
+        <h4>Reference Frameworks</h4>
+        <div class="tag-list">
+          <span class="tag" style="border-color:var(--nyu-purple);color:var(--nyu-purple)">MITRE ATLAS</span>
+          <span class="tag" style="border-color:var(--accent-blue);color:var(--accent-blue)">NIST AI 100-2e2025</span>
+          <span class="tag" style="border-color:var(--accent-green);color:var(--accent-green)">EU AI Act Art. 51</span>
+          <span class="tag" style="border-color:var(--accent-orange);color:var(--accent-orange)">Cisco Supply Chain Taxonomy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header" style="background:linear-gradient(135deg,#1d4ed8,#1e40af)">
+        <div class="project-num">Project 2</div>
+        <div class="project-title">Fine-Tuning the SLM & Council of Experts</div>
+      </div>
+      <div class="project-body">
+        <h4>Relevant Cisco Findings</h4>
+        <p>Multi-turn jailbreak success rates reach 92.78% across popular models. Alignment-focused training (e.g., Google Gemma) significantly improves resilience vs. capability-focused training (e.g., Llama). MCP inter-module communications are a primary new attack vector. Agent-to-agent trust is exploitable for lateral movement.</p>
+        <h4>Action Items</h4>
+        <p>Include adversarial multi-turn scenarios in your fine-tuning dataset — not just single-turn safety failures. Apply zero-trust between expert modules: each module's output must be validated before being passed as input to another. Implement least-privilege tool access for all module APIs. Reference Cisco's MCP taxonomy (14 threat types) and A2A taxonomy (17 threat types) when designing coordination mechanisms.</p>
+        <h4>Reference Frameworks</h4>
+        <div class="tag-list">
+          <span class="tag" style="border-color:var(--nyu-purple);color:var(--nyu-purple)">OWASP LLM Top 10</span>
+          <span class="tag" style="border-color:var(--accent-blue);color:var(--accent-blue)">Cisco MCP Taxonomy</span>
+          <span class="tag" style="border-color:var(--accent-green);color:var(--accent-green)">Cisco A2A Taxonomy</span>
+          <span class="tag" style="border-color:var(--accent-red);color:var(--accent-red)">Zero-Trust Architecture</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header" style="background:linear-gradient(135deg,#059669,#047857)">
+        <div class="project-num">Project 3</div>
+        <div class="project-title">Testing, User Experience & Integration</div>
+      </div>
+      <div class="project-body">
+        <h4>Relevant Cisco Findings</h4>
+        <p>No existing tool provides unified visibility across safety + security dimensions in a single auditable interface. Cisco identifies the need for executive-level views (attacker objectives) and technical-level views (techniques/subtechniques). Organizations need continuous evaluation, not point-in-time testing. 90% of federal leaders use AI but cite security as a top concern.</p>
+        <h4>Action Items</h4>
+        <p>Build dashboards that show per-module assessments side-by-side and prominently surface disagreements between modules — this is itself a governance signal. Provide both an executive summary view and a technical detail view aligned to Cisco's four-layer taxonomy (objectives → techniques → subtechniques → procedures). All agent interactions must be logged and monitored. Use Cisco's 19 attacker objectives as a test case taxonomy for your Fall 2024/Spring 2025 UNICC project validation.</p>
+        <h4>Reference Frameworks</h4>
+        <div class="tag-list">
+          <span class="tag" style="border-color:var(--nyu-purple);color:var(--nyu-purple)">Cisco AI Security Framework</span>
+          <span class="tag" style="border-color:var(--accent-blue);color:var(--accent-blue)">NIST AI RMF</span>
+          <span class="tag" style="border-color:var(--accent-green);color:var(--accent-green)">ISO 42001</span>
+          <span class="tag" style="border-color:var(--accent-orange);color:var(--accent-orange)">Continuous Evaluation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 4: RESEARCH INSIGHTS ===== -->
+  <div id="tab-insights" class="tab-panel">
+
+    <p class="section-title">Academic Insights & DSI 2026 Paper Arguments</p>
+    <p class="section-sub">Three citable, industry-validated arguments that strengthen your research contribution</p>
+    <div class="divider"></div>
+
+    <div class="insight-card">
+      <div class="insight-top">
+        <div class="insight-num">1</div>
+        <div class="insight-title">The Council of Experts Is Defensively Superior to Any Single Model</div>
+      </div>
+      <div class="insight-body">Cisco explicitly documents that no single model or framework covers the full AI risk landscape. Your ensemble architecture directly addresses this gap by providing independent perspectives that cross-validate each other. The Cisco report gives you quantitative support: even the best-performing model (Google Gemma) still failed 30.7% of multi-turn attacks. Diversity in safety assessment leads to more robust outcomes — a core claim you can now support with industry data.</div>
+    </div>
+
+    <div class="insight-card" style="border-left-color:var(--accent-blue)">
+      <div class="insight-top">
+        <div class="insight-num" style="background:var(--accent-blue)">2</div>
+        <div class="insight-title">Surfacing Disagreement Between Modules Is a Governance Feature, Not a Bug</div>
+      </div>
+      <div class="insight-body">When your three expert modules disagree on a safety assessment, that disagreement is itself actionable intelligence for human reviewers. Cisco's framework argues that adversarial behavior, unintended system behavior, and user harm are interconnected — no single module can detect all three simultaneously. Your "arbitration and synthesis" mechanism is a novel contribution to the AI governance literature that goes beyond what any existing industry framework provides.</div>
+    </div>
+
+    <div class="insight-card" style="border-left-color:var(--accent-green)">
+      <div class="insight-top">
+        <div class="insight-num" style="background:var(--accent-green)">3</div>
+        <div class="insight-title">On-Premises, Auditable Deployment Is Validated by Security Research</div>
+      </div>
+      <div class="insight-body">Cisco documents how black-box external APIs introduce supply chain risk, provenance uncertainty, and potential data exfiltration. UNICC's requirement for an on-premises SLM on the DGX Spark cluster is not a constraint — it's the architecturally correct choice according to the security research literature. The EU AI Act's General Purpose AI rules (in force August 2025) further validate this position by requiring transparency about training and adversarial testing for foundation models used in institutional settings.</div>
+    </div>
+
+    <div class="divider" style="margin-top:32px;"></div>
+    <p class="section-title">Key Frameworks to Cite</p>
+    <p class="section-sub" style="margin-bottom:16px;">Reference these in your FRS, progress reports, and DSI 2026 paper</p>
+
+    <div class="fw-row">
+      <div class="fw-icon">🔴</div>
+      <div>
+        <div class="fw-name">OWASP LLM Top 10 (2025 Update)</div>
+        <div class="fw-detail">Now includes "Excessive Agency" as a formal category — directly applicable to agentic AI evaluation in the UNICC Sandbox. Use as a primary threat taxonomy for Project 2 fine-tuning design and Project 3 test case construction.</div>
+      </div>
+    </div>
+    <div class="fw-row">
+      <div class="fw-icon">🟠</div>
+      <div>
+        <div class="fw-name">MITRE ATLAS (2025 Agentic Update)</div>
+        <div class="fw-detail">Adversarial threat tactics for ML systems, updated in 2025 with new agentic threat categories. Use for threat modeling in Project 1 research documentation and FRS threat taxonomy.</div>
+      </div>
+    </div>
+    <div class="fw-row">
+      <div class="fw-icon">🔵</div>
+      <div>
+        <div class="fw-name">NIST AI RMF — AI 100-2e2025 (March 2025)</div>
+        <div class="fw-detail">Introduced broader threat categories for adversarial machine learning. Aligns with ISO 42001 and ISO 23894. Strong primary citation for the DSI 2026 paper — a U.S. government standard with international alignment.</div>
+      </div>
+    </div>
+    <div class="fw-row">
+      <div class="fw-icon">🟢</div>
+      <div>
+        <div class="fw-name">Cisco Integrated AI Security &amp; Safety Framework (2026)</div>
+        <div class="fw-detail">19 attacker objectives, 150+ techniques/subtechniques, 25 harmful content categories, plus standalone MCP (14 threat types) and A2A (17 threat types) taxonomies. One of the most complete unified frameworks available. Cite as the industry standard your lab operationalizes.</div>
+      </div>
+    </div>
+    <div class="fw-row">
+      <div class="fw-icon">🇪🇺</div>
+      <div>
+        <div class="fw-name">EU AI Act — General Purpose AI Rules (Aug 2025)</div>
+        <div class="fw-detail">Now in force for foundation models. Requires adversarial testing, model evaluation, and incident reporting. Provides the regulatory context for why UNICC needs a pre-deployment safety lab — particularly relevant for an international organization operating across EU member states.</div>
+      </div>
+    </div>
+
+    <div class="citation-box">
+      <h3>APA 7th Edition Citation — Primary Source</h3>
+      <div class="citation-text">Chang, A., Saade, T., &amp; Antone, E. (2026). <em>State of AI Security 2026.</em> Cisco Systems, Inc.</div>
+      <br>
+      <h3>APA 7th Edition Citation — Capstone Memorandum</h3>
+      <div class="citation-text">Fortino, A. (2026, January 12). <em>Participate in the UNICC AI Safety Lab Project</em> [Memorandum]. New York University School of Professional Studies, M.S. in Management and Systems (MASY GC-4100).</div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleThreat(card) {
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.threat-card').forEach(c => c.classList.remove('open'));
+    if (!isOpen) card.classList.add('open');
+  }
+</script>
+</body>
+</html>

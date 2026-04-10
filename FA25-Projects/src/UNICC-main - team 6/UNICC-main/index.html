@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNICC AI Safety Testing Platform</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Shield = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>;
+        const Upload = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>;
+        const Activity = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>;
+        const BarChart3 = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>;
+        const FileText = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
+        const Settings = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
+        const CheckCircle = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+        const AlertTriangle = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>;
+        const XCircle = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+        const ChevronRight = ({ className }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>;
+
+        function AISafetyDashboard() {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [testInProgress, setTestInProgress] = useState(false);
+            const [currentTestResult, setCurrentTestResult] = useState(null);
+            const [testHistory, setTestHistory] = useState([]);
+            const [selectedTest, setSelectedTest] = useState(null);
+            const [viewingReportId, setViewingReportId] = useState(null);
+            const [uploadedFile, setUploadedFile] = useState(null);
+            const [selectedPolicies, setSelectedPolicies] = useState({
+                eu_ai_act: true, us_nist: true, iso: true, unesco: true, oecd: false, ieee: false
+            });
+            const [reportsView, setReportsView] = useState('list');
+            const [selectedAgent, setSelectedAgent] = useState('news_xenophobia');
+
+            const WEBHOOK_URL = 'https://jiakainiu.app.n8n.cloud/webhook/30146b5a-8c33-4003-9c6d-44114badce13';
+
+            useEffect(() => {
+                const saved = localStorage.getItem('unicc_test_history');
+                if (saved) setTestHistory(JSON.parse(saved));
+            }, []);
+
+            useEffect(() => {
+                if (testHistory.length > 0) localStorage.setItem('unicc_test_history', JSON.stringify(testHistory));
+            }, [testHistory]);
+
+            const smartSummarize = (text, maxSentences = 2) => {
+                if (!text) return '';
+                
+                const cleanText = text.trim();
+                if (!cleanText) return '';
+                
+                const sentences = cleanText.match(/[^.!?]+[.!?]+[\s]*/g) || [cleanText];
+                
+                if (sentences.length <= maxSentences) {
+                    return cleanText;
+                }
+                
+                const scoredSentences = sentences.map((sentence, idx) => {
+                    const words = sentence.trim().split(/\s+/).length;
+                    const positionScore = idx === 0 ? 2 : (idx === sentences.length - 1 ? 1.5 : 1);
+                    const lengthScore = Math.min(words / 10, 2);
+                    return {
+                        text: sentence.trim(),
+                        score: positionScore * lengthScore,
+                        index: idx
+                    };
+                });
+                
+                const topSentences = scoredSentences
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, maxSentences)
+                    .sort((a, b) => a.index - b.index);
+                
+                return topSentences.map(s => s.text).join(' ') + '...';
+            };
+
+            // Enhanced text formatting functions
+            const extractStats = (text) => {
+                if (!text) return [];
+                const stats = [];
+                
+                // Match patterns like "12 tests passed" or "6 requiring attention"
+                const patterns = [
+                    /(\d+)\s+(tests?\s+)?passed/gi,
+                    /(\d+)\s+(requiring|needs?)\s+attention/gi,
+                    /(\d+)\s+failed/gi,
+                    /(\d+)\s+tests?/gi,
+                    /average\s+severity\s+of\s+([\d.]+)/gi,
+                    /(\d+)%/g
+                ];
+                
+                patterns.forEach(pattern => {
+                    let match;
+                    while ((match = pattern.exec(text)) !== null) {
+                        const value = match[1];
+                        const context = match[0];
+                        if (context.toLowerCase().includes('passed')) {
+                            stats.push({ value, label: 'Passed', type: 'success' });
+                        } else if (context.toLowerCase().includes('attention')) {
+                            stats.push({ value, label: 'Need Attention', type: 'warning' });
+                        } else if (context.toLowerCase().includes('failed')) {
+                            stats.push({ value, label: 'Failed', type: 'danger' });
+                        } else if (context.toLowerCase().includes('severity')) {
+                            stats.push({ value, label: 'Avg Severity', type: 'info' });
+                        }
+                    }
+                });
+                
+                return stats.slice(0, 4); // Limit to 4 key stats
+            };
+
+            const detectSections = (text) => {
+                if (!text) return [{ content: text }];
+                
+                const sections = [];
+                const keywords = ['Overall', 'Specifically', 'Notably', 'The top risks', 'Since', 'Key', 'However', 'Additionally'];
+                
+                let currentSection = { header: null, content: '' };
+                const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+                
+                sentences.forEach((sentence, idx) => {
+                    const trimmed = sentence.trim();
+                    const startsWithKeyword = keywords.some(kw => trimmed.startsWith(kw));
+                    
+                    if (startsWithKeyword && currentSection.content) {
+                        sections.push({ ...currentSection });
+                        currentSection = { header: null, content: trimmed };
+                    } else {
+                        currentSection.content += (currentSection.content ? ' ' : '') + trimmed;
+                    }
+                });
+                
+                if (currentSection.content) {
+                    sections.push(currentSection);
+                }
+                
+                return sections.length > 0 ? sections : [{ content: text }];
+            };
+
+            const highlightKeyTerms = (text) => {
+                if (!text) return text;
+                
+                const terms = {
+                    'high risk': 'bg-red-100 text-red-800 px-1 rounded font-medium',
+                    'medium risk': 'bg-yellow-100 text-yellow-800 px-1 rounded font-medium',
+                    'low risk': 'bg-green-100 text-green-800 px-1 rounded font-medium',
+                    'moderate risk': 'bg-yellow-100 text-yellow-800 px-1 rounded font-medium',
+                    'Technical': 'text-blue-700 font-semibold',
+                    'Ethical': 'text-purple-700 font-semibold',
+                    'Legal': 'text-orange-700 font-semibold',
+                    'Societal': 'text-teal-700 font-semibold'
+                };
+                
+                let result = text;
+                Object.keys(terms).forEach(term => {
+                    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+                    result = result.replace(regex, `<span class="${terms[term]}">${term}</span>`);
+                });
+                
+                return result;
+            };
+
+            const extractBulletPoints = (text) => {
+                if (!text) return [];
+                
+                // Look for sentences that might be action items or key points
+                const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+                const bulletPoints = [];
+                
+                const actionWords = ['should', 'must', 'need', 'require', 'recommend', 'include', 'ensure', 'implement', 'conduct', 'strengthen', 'address'];
+                
+                sentences.forEach(sentence => {
+                    const trimmed = sentence.trim();
+                    const hasActionWord = actionWords.some(word => 
+                        trimmed.toLowerCase().includes(word)
+                    );
+                    
+                    if (hasActionWord || trimmed.length > 50) {
+                        bulletPoints.push(trimmed);
+                    }
+                });
+                
+                return bulletPoints;
+            };
+
+            const runTest = async () => {
+                if (!uploadedFile) { alert('Please upload PDF first'); return; }
+                setTestInProgress(true);
+                setActiveTab('reports');
+                setReportsView('list');
+                try {
+                    const formData = new FormData();
+                    formData.append('file', uploadedFile);
+                    formData.append('selected_policies', JSON.stringify(Object.keys(selectedPolicies).filter(k => selectedPolicies[k])));
+                    const response = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+                    const responseText = await response.text();
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const result = JSON.parse(responseText);
+                    
+                    // Extract actual score and risk tier from response
+                    const output = result.output || result.reports || result;
+                    const metrics = result.metrics_snapshot || output.metrics_snapshot || {};
+                    const actualScore = output.overall_score || metrics.overall_score || 75;
+                    const riskTier = output.risk_tier || metrics.score_risk_tier || 'medium';
+                    
+                    // Calculate status based on score
+                    let status = 'passed';
+                    if (actualScore < 60) {
+                        status = 'failed';
+                    } else if (actualScore < 80) {
+                        status = 'warning';
+                    }
+                    
+                    const testRecord = {
+                        id: Date.now(), 
+                        fileName: uploadedFile.name, 
+                        date: new Date().toISOString(),
+                        result: result, 
+                        score: actualScore, 
+                        status: status, 
+                        risk: riskTier.toLowerCase(),
+                        file: uploadedFile  // Store the file for download
+                    };
+                    setTestHistory([testRecord, ...testHistory]);
+                    setCurrentTestResult(result);
+                    setViewingReportId(testRecord.id);
+                    setTestInProgress(false);
+                    setReportsView('detail');
+                    alert('Test completed!');
+                } catch (error) {
+                    setTestInProgress(false);
+                    setReportsView('list');
+                    alert('Error: ' + error.message);
+                }
+            };
+
+            const getRiskColor = (risk) => {
+                const r = risk?.toLowerCase() || '';
+                if (r === 'low') return 'text-green-600 bg-green-50 border-green-200';
+                if (r === 'medium') return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+                if (r === 'high') return 'text-red-600 bg-red-50 border-red-200';
+                return 'text-gray-600 bg-gray-50 border-gray-200';
+            };
+
+            const getStatusIcon = (status) => {
+                if (status === 'passed') return <CheckCircle className="w-5 h-5 text-green-600" />;
+                if (status === 'warning') return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
+                if (status === 'failed') return <XCircle className="w-5 h-5 text-red-600" />;
+                return <Activity className="w-5 h-5 text-gray-600" />;
+            };
+
+            const ReportSummary = ({ report, onViewFull }) => {
+                // Handle different response structures
+                const output = report.output || report.reports || report;
+                const metrics = report.metrics_snapshot || output.metrics_snapshot || {};
+                const riskTier = output.risk_tier || metrics.score_risk_tier || report.risk_tier || 'Medium';
+                const overallScore = output.overall_score || metrics.overall_score || report.overall_score || 75;
+                
+                // Determine status based on score
+                const getStatus = (score) => {
+                    if (score >= 80) return 'Passed';
+                    if (score >= 60) return 'Needs Review';
+                    return 'Failed';
+                };
+                
+                const status = getStatus(overallScore);
+                const summaryText = output.summary || output.executive_summary || '';
+                const recText = output.recommendation || output.recommendations || output.final_recommendation || '';
+                
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-lg shadow p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">Test Summary</h2>
+                            
+                            {/* Score Cards */}
+                            <div className="grid grid-cols-3 gap-4 mb-6">
+                                <div className="bg-white p-4 rounded-lg border-2">
+                                    <p className="text-sm text-gray-600 mb-1">Overall Score</p>
+                                    <p className="text-3xl font-bold">{overallScore}%</p>
+                                </div>
+                                <div className={`p-4 rounded-lg border-2 ${getRiskColor(riskTier)}`}>
+                                    <p className="text-sm mb-1 font-medium">Risk Tier</p>
+                                    <p className="text-2xl font-bold uppercase">{riskTier}</p>
+                                </div>
+                                <div className={`p-4 rounded-lg border-2 ${
+                                    status === 'Passed' ? 'bg-green-50 border-green-200' :
+                                    status === 'Needs Review' ? 'bg-yellow-50 border-yellow-200' :
+                                    'bg-red-50 border-red-200'
+                                }`}>
+                                    <p className="text-sm text-gray-600 mb-1">Status</p>
+                                    <p className={`text-lg font-bold ${
+                                        status === 'Passed' ? 'text-green-700' :
+                                        status === 'Needs Review' ? 'text-yellow-700' :
+                                        'text-red-700'
+                                    }`}>{status}</p>
+                                </div>
+                            </div>
+
+                            {/* Executive Summary - Enhanced */}
+                            {summaryText && (
+                                <div className="mb-6">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="text-lg">📋</span>
+                                        <h3 className="font-bold text-gray-900">Executive Summary</h3>
+                                    </div>
+                                    
+                                    {(() => {
+                                        const stats = extractStats(summaryText);
+                                        const sections = detectSections(summaryText);
+                                        
+                                        return (
+                                            <>
+                                                {/* Mini Stats */}
+                                                {stats.length > 0 && (
+                                                    <div className="grid grid-cols-4 gap-2 mb-4">
+                                                        {stats.slice(0, 4).map((stat, idx) => (
+                                                            <div key={idx} className={`p-2 rounded border text-center ${
+                                                                stat.type === 'success' ? 'bg-green-50 border-green-200' :
+                                                                stat.type === 'warning' ? 'bg-yellow-50 border-yellow-200' :
+                                                                stat.type === 'danger' ? 'bg-red-50 border-red-200' :
+                                                                'bg-blue-50 border-blue-200'
+                                                            }`}>
+                                                                <div className={`text-lg font-bold ${
+                                                                    stat.type === 'success' ? 'text-green-700' :
+                                                                    stat.type === 'warning' ? 'text-yellow-700' :
+                                                                    stat.type === 'danger' ? 'text-red-700' :
+                                                                    'text-blue-700'
+                                                                }`}>
+                                                                    {stat.value}
+                                                                </div>
+                                                                <div className="text-xs text-gray-600">{stat.label}</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                
+                                                {/* Summary Preview */}
+                                                <div className="text-sm text-gray-700 leading-relaxed">
+                                                    {sections.slice(0, 2).map((section, idx) => (
+                                                        <p 
+                                                            key={idx}
+                                                            className="mb-2"
+                                                            dangerouslySetInnerHTML={{ __html: highlightKeyTerms(smartSummarize(section.content, 2)) }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            )}
+
+                            {/* Recommendations - Enhanced */}
+                            {recText && (
+                                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="text-lg">💡</span>
+                                        <h3 className="font-bold text-blue-900">Key Recommendations</h3>
+                                    </div>
+                                    
+                                    {(() => {
+                                        const bulletPoints = extractBulletPoints(recText);
+                                        
+                                        return (
+                                            <ul className="space-y-2">
+                                                {bulletPoints.slice(0, 3).map((point, idx) => (
+                                                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                                                        <div className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <span 
+                                                            className="flex-1"
+                                                            dangerouslySetInnerHTML={{ __html: highlightKeyTerms(smartSummarize(point, 1)) }}
+                                                        />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        );
+                                    })()}
+                                </div>
+                            )}
+
+                            <button 
+                                onClick={onViewFull}
+                                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 flex items-center justify-center gap-2"
+                            >
+                                <FileText className="w-5 h-5" />
+                                View Full Report
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const ReportView = ({ report }) => {
+                // Handle both response structures
+                const output = report.output || report.reports || report;
+                const metrics = report.metrics_snapshot || output.metrics_snapshot || {};
+                
+                return (
+                    <div className="space-y-6">
+                        {/* Overall Scores */}
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="bg-white p-4 rounded-lg shadow">
+                                <p className="text-sm text-gray-600 mb-1">Overall Score</p>
+                                <p className="text-3xl font-bold">{output.overall_score || metrics.overall_score || 75}%</p>
+                            </div>
+                            <div className={`p-4 rounded-lg shadow border-2 ${getRiskColor(output.risk_tier || metrics.score_risk_tier)}`}>
+                                <p className="text-sm mb-1 font-medium">Risk Tier</p>
+                                <p className="text-2xl font-bold uppercase">{output.risk_tier || metrics.score_risk_tier || 'Medium'}</p>
+                            </div>
+                            <div className={`p-4 rounded-lg shadow border-2 ${(() => {
+                                const score = output.overall_score || metrics.overall_score || 75;
+                                if (score >= 80) return 'bg-green-50 border-green-200';
+                                if (score >= 60) return 'bg-yellow-50 border-yellow-200';
+                                return 'bg-red-50 border-red-200';
+                            })()}`}>
+                                <p className="text-sm text-gray-600 mb-1">Status</p>
+                                <p className={`text-lg font-bold ${(() => {
+                                    const score = output.overall_score || metrics.overall_score || 75;
+                                    if (score >= 80) return 'text-green-700';
+                                    if (score >= 60) return 'text-yellow-700';
+                                    return 'text-red-700';
+                                })()}`}>
+                                    {(() => {
+                                        const score = output.overall_score || metrics.overall_score || 75;
+                                        if (score >= 80) return 'Passed';
+                                        if (score >= 60) return 'Needs Review';
+                                        return 'Failed';
+                                    })()}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Executive Summary - Enhanced */}
+                        {(output.summary || output.executive_summary) && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <span className="text-2xl">📋</span>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900">Executive Summary</h3>
+                                </div>
+                                
+                                {(() => {
+                                    const summaryText = output.summary || output.executive_summary;
+                                    const stats = extractStats(summaryText);
+                                    const sections = detectSections(summaryText);
+                                    
+                                    return (
+                                        <>
+                                            {/* Key Statistics */}
+                                            {stats.length > 0 && (
+                                                <div className="grid grid-cols-4 gap-3 mb-6">
+                                                    {stats.map((stat, idx) => (
+                                                        <div key={idx} className={`p-3 rounded-lg border-2 text-center ${
+                                                            stat.type === 'success' ? 'bg-green-50 border-green-200' :
+                                                            stat.type === 'warning' ? 'bg-yellow-50 border-yellow-200' :
+                                                            stat.type === 'danger' ? 'bg-red-50 border-red-200' :
+                                                            'bg-blue-50 border-blue-200'
+                                                        }`}>
+                                                            <div className={`text-2xl font-bold ${
+                                                                stat.type === 'success' ? 'text-green-700' :
+                                                                stat.type === 'warning' ? 'text-yellow-700' :
+                                                                stat.type === 'danger' ? 'text-red-700' :
+                                                                'text-blue-700'
+                                                            }`}>
+                                                                {stat.value}
+                                                            </div>
+                                                            <div className="text-xs text-gray-600 mt-1">{stat.label}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            
+                                            {/* Formatted Content */}
+                                            <div className="space-y-4">
+                                                {sections.map((section, idx) => (
+                                                    <div key={idx} className="text-sm text-gray-700 leading-relaxed">
+                                                        {section.header && (
+                                                            <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                                                <span className="text-blue-600">▸</span>
+                                                                {section.header}
+                                                            </h4>
+                                                        )}
+                                                        <p 
+                                                            className="pl-4 border-l-2 border-gray-200"
+                                                            dangerouslySetInnerHTML={{ __html: highlightKeyTerms(section.content) }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </>
+                                    );
+                                })()}
+                            </div>
+                        )}
+
+                        {/* Recommendations - Enhanced */}
+                        {(output.recommendation || output.recommendations || output.final_recommendation) && (
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                        <span className="text-2xl">💡</span>
+                                    </div>
+                                    <h3 className="font-bold text-blue-900 text-lg">Recommendations</h3>
+                                </div>
+                                
+                                {(() => {
+                                    const recText = output.recommendation || output.recommendations || output.final_recommendation;
+                                    const bulletPoints = extractBulletPoints(recText);
+                                    
+                                    return (
+                                        <div className="space-y-3">
+                                            {bulletPoints.length > 0 ? (
+                                                <ul className="space-y-3">
+                                                    {bulletPoints.map((point, idx) => (
+                                                        <li key={idx} className="flex items-start gap-3 bg-white bg-opacity-70 p-3 rounded-lg">
+                                                            <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                                                                {idx + 1}
+                                                            </div>
+                                                            <p 
+                                                                className="text-sm text-gray-700 leading-relaxed flex-1"
+                                                                dangerouslySetInnerHTML={{ __html: highlightKeyTerms(point) }}
+                                                            />
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p 
+                                                    className="text-sm text-gray-700 leading-relaxed"
+                                                    dangerouslySetInnerHTML={{ __html: highlightKeyTerms(recText) }}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        )}
+
+                        {/* Risk by Category */}
+                        {(metrics.category_radar || output.category_radar) && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h3 className="text-lg font-bold mb-4">Risk by Category</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {Object.entries(metrics.category_radar || output.category_radar).map(([cat, data]) => (
+                                        <div key={cat} className="border-2 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-bold text-base text-gray-900">{cat}</h4>
+                                                <span className={`text-xs px-3 py-1 rounded-full font-medium ${data.assessed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                    {data.assessed ? 'Assessed' : 'Not Assessed'}
+                                                </span>
+                                            </div>
+                                            {data.assessed && (
+                                                <>
+                                                    <div className="mb-3">
+                                                        <span className="text-sm text-gray-600">Average Severity: </span>
+                                                        <span className="text-lg font-bold text-red-600">{data.avg_severity}/5</span>
+                                                    </div>
+                                                    <div className="flex gap-4 text-sm">
+                                                        <div className="flex items-center gap-1">
+                                                            <CheckCircle className="w-4 h-4 text-green-600" />
+                                                            <span className="font-medium">{data.pass}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                                                            <span className="font-medium">{data.needs_attention}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <XCircle className="w-4 h-4 text-red-600" />
+                                                            <span className="font-medium">{data.fail}</span>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Top Risks */}
+                        {(metrics.top_risks || output.top_risks) && (metrics.top_risks || output.top_risks).length > 0 && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h3 className="text-lg font-bold mb-4">Top Identified Risks</h3>
+                                <div className="space-y-3">
+                                    {(metrics.top_risks || output.top_risks).map((risk, i) => (
+                                        <div key={i} className="flex items-start gap-3 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                                            <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                                            <div className="flex-1">
+                                                <p className="text-sm font-bold text-gray-900">{risk.replace(/_/g, ' ')}</p>
+                                                <p className="text-xs text-gray-600 mt-1">Priority #{i + 1}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Policy Alignment Status */}
+                        {output.policy_alignment && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h3 className="text-lg font-bold mb-4">Policy Alignment Status</h3>
+                                
+                                {output.policy_alignment.aligned && output.policy_alignment.aligned.length > 0 && (
+                                    <div className="mb-6">
+                                        <h4 className="font-bold text-green-700 mb-3 flex items-center gap-2">
+                                            <CheckCircle className="w-5 h-5" />
+                                            Aligned Policies
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {output.policy_alignment.aligned.map((policy, idx) => (
+                                                <li key={idx} className="text-sm text-gray-700 pl-4 border-l-4 border-green-500 py-2 bg-green-50">
+                                                    {policy}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {output.policy_alignment.partially_aligned && output.policy_alignment.partially_aligned.length > 0 && (
+                                    <div className="mb-6">
+                                        <h4 className="font-bold text-yellow-700 mb-3 flex items-center gap-2">
+                                            <AlertTriangle className="w-5 h-5" />
+                                            Partially Aligned Policies
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {output.policy_alignment.partially_aligned.map((policy, idx) => (
+                                                <li key={idx} className="text-sm text-gray-700 pl-4 border-l-4 border-yellow-500 py-2 bg-yellow-50">
+                                                    {policy}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {output.policy_alignment.not_aligned && output.policy_alignment.not_aligned.length > 0 && (
+                                    <div className="mb-6">
+                                        <h4 className="font-bold text-red-700 mb-3 flex items-center gap-2">
+                                            <XCircle className="w-5 h-5" />
+                                            Not Aligned Policies
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {output.policy_alignment.not_aligned.map((policy, idx) => (
+                                                <li key={idx} className="text-sm text-gray-700 pl-4 border-l-4 border-red-500 py-2 bg-red-50">
+                                                    {policy}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {output.policy_alignment.not_assessed && output.policy_alignment.not_assessed.length > 0 && (
+                                    <div>
+                                        <h4 className="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                            <Activity className="w-5 h-5" />
+                                            Not Assessed
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {output.policy_alignment.not_assessed.map((policy, idx) => (
+                                                <li key={idx} className="text-sm text-gray-700 pl-4 border-l-4 border-gray-400 py-2 bg-gray-50">
+                                                    {policy}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Policy Risk Mapping - Enhanced */}
+                        {(output.policy_risk_mapping || metrics.policy_risk_mapping) && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <span className="text-2xl">🔍</span>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900">Detailed Policy Risk Analysis</h3>
+                                </div>
+                                
+                                <div className="space-y-5">
+                                    {(output.policy_risk_mapping || metrics.policy_risk_mapping).map((policy, idx) => {
+                                        const keyActions = extractBulletPoints(policy.reason);
+                                        const sections = detectSections(policy.reason);
+                                        
+                                        return (
+                                            <div key={idx} className="border-2 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+                                                {/* Header */}
+                                                <div className={`p-4 ${
+                                                    policy.status === 'pass' ? 'bg-green-50 border-b-2 border-green-200' :
+                                                    policy.status === 'needs_attention' ? 'bg-yellow-50 border-b-2 border-yellow-200' :
+                                                    'bg-red-50 border-b-2 border-red-200'
+                                                }`}>
+                                                    <div className="flex items-start justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg ${
+                                                                policy.status === 'pass' ? 'bg-green-600' :
+                                                                policy.status === 'needs_attention' ? 'bg-yellow-600' :
+                                                                'bg-red-600'
+                                                            }`}>
+                                                                {policy.status === 'pass' ? '✓' : 
+                                                                 policy.status === 'needs_attention' ? '⚠' : '✗'}
+                                                            </div>
+                                                            <h4 className="font-bold text-base text-gray-900">
+                                                                {policy.policy_id.replace(/_/g, ' ')}
+                                                            </h4>
+                                                        </div>
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                                            policy.status === 'pass' ? 'bg-green-600 text-white' :
+                                                            policy.status === 'needs_attention' ? 'bg-yellow-600 text-white' :
+                                                            'bg-red-600 text-white'
+                                                        }`}>
+                                                            {policy.status.replace(/_/g, ' ').toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    {/* Related Risks */}
+                                                    {policy.related_risks && policy.related_risks.length > 0 && (
+                                                        <div className="mt-3">
+                                                            <p className="text-xs font-semibold text-gray-600 mb-2">🎯 Related Risks:</p>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {policy.related_risks.map((risk, ridx) => (
+                                                                    <span key={ridx} className="text-xs bg-white bg-opacity-70 text-gray-700 px-2 py-1 rounded border border-gray-300">
+                                                                        {risk.replace(/_/g, ' ')}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* Content */}
+                                                <div className="p-4 bg-white">
+                                                    {keyActions.length > 2 ? (
+                                                        <div className="space-y-4">
+                                                            {/* Summary of gaps */}
+                                                            <div>
+                                                                <h5 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                                                    <span className="text-red-600">⚠️</span>
+                                                                    Key Gaps & Issues:
+                                                                </h5>
+                                                                <p className="text-sm text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-300">
+                                                                    {sections[0]?.content.substring(0, 200)}...
+                                                                </p>
+                                                            </div>
+                                                            
+                                                            {/* Action items */}
+                                                            <div>
+                                                                <h5 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                                                    <span className="text-blue-600">📋</span>
+                                                                    Required Actions:
+                                                                </h5>
+                                                                <ul className="space-y-2">
+                                                                    {keyActions.slice(0, 4).map((action, aidx) => (
+                                                                        <li key={aidx} className="flex items-start gap-2 text-sm text-gray-700">
+                                                                            <span className="text-blue-600 mt-1 flex-shrink-0">▸</span>
+                                                                            <span 
+                                                                                dangerouslySetInnerHTML={{ __html: highlightKeyTerms(action) }}
+                                                                            />
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <p 
+                                                            className="text-sm text-gray-700 leading-relaxed"
+                                                            dangerouslySetInnerHTML={{ __html: highlightKeyTerms(policy.reason) }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Policy Testing Statistics */}
+                        {(metrics.policy_stats || output.policy_stats) && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h3 className="text-lg font-bold mb-4">Policy Testing Statistics</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {Object.entries(metrics.policy_stats || output.policy_stats).map(([policy, stats]) => (
+                                        <div key={policy} className="border-2 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                            <h4 className="font-bold text-sm text-gray-900 mb-3">{policy.replace(/_/g, ' ')}</h4>
+                                            {stats.assessed ? (
+                                                <div className="flex gap-4 text-sm">
+                                                    <div className="flex items-center gap-1">
+                                                        <CheckCircle className="w-4 h-4 text-green-600" />
+                                                        <span className="font-medium">{stats.pass}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                                                        <span className="font-medium">{stats.needs_attention}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <XCircle className="w-4 h-4 text-red-600" />
+                                                        <span className="font-medium">{stats.fail}</span>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <span className="text-sm text-gray-500">Not assessed</span>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Presentation Outline */}
+                        {output.ppt_outline && output.ppt_outline.length > 0 && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h3 className="text-lg font-bold mb-4">Presentation Outline</h3>
+                                <div className="space-y-4">
+                                    {output.ppt_outline.map((slide, idx) => (
+                                        <div key={idx} className="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50">
+                                            <h4 className="font-bold text-base text-gray-900 mb-2">
+                                                Slide {idx + 1}: {slide.title}
+                                            </h4>
+                                            <ul className="space-y-2">
+                                                {slide.bullets.map((bullet, bidx) => (
+                                                    <li key={bidx} className="text-sm text-gray-700 flex items-start gap-2">
+                                                        <span className="text-blue-600 mt-1">•</span>
+                                                        <span>{bullet}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <div className="bg-blue-900 text-white shadow-lg">
+                        <div className="max-w-7xl mx-auto px-6 py-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <Shield className="w-8 h-8" />
+                                    <div>
+                                        <h1 className="text-2xl font-bold">UNICC AI Safety Testing Platform</h1>
+                                        <p className="text-blue-200 text-sm">Secure AI Evaluation & Compliance Assessment</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm text-blue-200">UN AI Sandbox</span>
+                                    <div className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center font-semibold">LY</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white border-b shadow-sm">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <nav className="flex gap-8">
+                                {[
+                                    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+                                    { id: 'test', label: 'Run Test', icon: Upload },
+                                    { id: 'reports', label: 'Reports', icon: FileText },
+                                    { id: 'settings', label: 'Settings', icon: Settings },
+                                ].map(tab => (
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                        className={`flex items-center gap-2 py-4 px-2 border-b-2 transition-colors ${
+                                            activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-blue-600'
+                                        }`}>
+                                        <tab.icon className="w-4 h-4" />
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div className="max-w-7xl mx-auto px-6 py-8">
+                        {activeTab === 'dashboard' && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-4 gap-6">
+                                    <div className="bg-white p-6 rounded-lg shadow">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-gray-600 text-sm">Total Tests</p>
+                                                <p className="text-3xl font-bold text-gray-900">{testHistory.length}</p>
+                                            </div>
+                                            <Activity className="w-10 h-10 text-blue-600" />
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-gray-600 text-sm">Passed</p>
+                                                <p className="text-3xl font-bold text-green-600">
+                                                    {testHistory.filter(t => t.status === 'passed').length}
+                                                </p>
+                                            </div>
+                                            <CheckCircle className="w-10 h-10 text-green-600" />
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-gray-600 text-sm">Warnings</p>
+                                                <p className="text-3xl font-bold text-yellow-600">
+                                                    {testHistory.filter(t => t.status === 'warning').length}
+                                                </p>
+                                            </div>
+                                            <AlertTriangle className="w-10 h-10 text-yellow-600" />
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-gray-600 text-sm">Failed</p>
+                                                <p className="text-3xl font-bold text-red-600">
+                                                    {testHistory.filter(t => t.status === 'failed').length}
+                                                </p>
+                                            </div>
+                                            <XCircle className="w-10 h-10 text-red-600" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={selectedTest ? 'flex gap-6 h-[calc(100vh-400px)]' : ''}>
+                                    <div className={`${selectedTest ? 'w-2/5' : 'w-full'} transition-all`}>
+                                        <div className="bg-white rounded-lg shadow h-full flex flex-col">
+                                            <div className="p-6 border-b">
+                                                <h2 className="text-xl font-bold">Test History</h2>
+                                            </div>
+                                            {testHistory.length > 0 ? (
+                                                selectedTest ? (
+                                                    <div className="overflow-y-auto flex-1">
+                                                        {testHistory.map(test => (
+                                                            <div key={test.id} 
+                                                                onClick={() => setSelectedTest(selectedTest?.id === test.id ? null : test)}
+                                                                className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${selectedTest?.id === test.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''}`}>
+                                                                <div className="flex items-center justify-between mb-2">
+                                                                    <p className="font-medium text-sm">{test.fileName.replace(/\.pdf$/i, '')}</p>
+                                                                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                                                                </div>
+                                                                <div className="flex items-center gap-3 text-xs">
+                                                                    {getStatusIcon(test.status)}
+                                                                    <span className={`px-2 py-1 rounded uppercase ${getRiskColor(test.risk)}`}>{test.risk}</span>
+                                                                    <span className="text-gray-600">{test.score}%</span>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full">
+                                                            <thead className="bg-gray-50">
+                                                                <tr>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Risk Tier</th>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-gray-200">
+                                                                {testHistory.map(test => (
+                                                                    <tr key={test.id} className="hover:bg-gray-50">
+                                                                        <td className="px-6 py-4">
+                                                                            <div className="font-medium text-gray-900">{test.fileName.replace(/\.pdf$/i, '')}</div>
+                                                                        </td>
+                                                                        <td className="px-6 py-4">
+                                                                            <div className="flex items-center gap-2">
+                                                                                {getStatusIcon(test.status)}
+                                                                                <span className="capitalize">{test.status}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-6 py-4">
+                                                                            <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${getRiskColor(test.risk)}`}>
+                                                                                {test.risk}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-6 py-4">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div className="w-16 bg-gray-200 rounded-full h-2">
+                                                                                    <div 
+                                                                                        className={`h-2 rounded-full ${test.score >= 85 ? 'bg-green-600' : test.score >= 70 ? 'bg-yellow-600' : 'bg-red-600'}`}
+                                                                                        style={{ width: `${test.score}%` }}
+                                                                                    />
+                                                                                </div>
+                                                                                <span className="text-sm font-medium">{test.score}%</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-6 py-4 text-sm text-gray-600">
+                                                                            {new Date(test.date).toLocaleDateString()}
+                                                                        </td>
+                                                                        <td className="px-6 py-4">
+                                                                            <div className="flex items-center gap-4">
+                                                                                <button 
+                                                                                    onClick={() => setSelectedTest(test)}
+                                                                                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                                                                >
+                                                                                    View Details
+                                                                                </button>
+                                                                                <button 
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        if (confirm('Delete this test? This cannot be undone.')) {
+                                                                                            const newHistory = testHistory.filter(t => t.id !== test.id);
+                                                                                            setTestHistory(newHistory);
+                                                                                            if (selectedTest?.id === test.id) setSelectedTest(null);
+                                                                                        }
+                                                                                    }}
+                                                                                    className="text-gray-500 hover:text-gray-700 text-sm font-medium"
+                                                                                >
+                                                                                    Delete
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div className="flex-1 flex flex-col items-center justify-center p-12">
+                                                    <Activity className="w-16 h-16 text-gray-400 mb-4" />
+                                                    <p className="text-gray-500 mb-4">No tests yet</p>
+                                                    <button onClick={() => setActiveTab('test')} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                                        Run First Test
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {selectedTest && (
+                                        <div className="w-3/5 overflow-y-auto">
+                                            <ReportSummary 
+                                                report={selectedTest.result} 
+                                                onViewFull={() => {
+                                                    setCurrentTestResult(selectedTest.result);
+                                                    setActiveTab('reports');
+                                                    setReportsView('detail');
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'test' && (
+                            <div className="space-y-6">
+                                {/* Agent Selection */}
+                                <div className="bg-white rounded-lg shadow p-6">
+                                    <h2 className="text-xl font-bold mb-4">Select AI Agent to Test</h2>
+                                    <div className="relative">
+                                        <select 
+                                            value={selectedAgent}
+                                            onChange={(e) => setSelectedAgent(e.target.value)}
+                                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none appearance-none bg-white text-gray-900 font-medium cursor-pointer"
+                                        >
+                                            <option value="news_xenophobia">News Xenophobia Analysis Tool</option>
+                                            <option value="mirror">MIRROR</option>
+                                            <option value="verimedia">VeriMedia</option>
+                                            <option value="content_moderation">Content Moderation AI</option>
+                                            <option value="sentiment_analyzer">Sentiment Analyzer</option>
+                                            <option value="fact_checker">AI Fact Checker</option>
+                                            <option value="custom">Custom Agent</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                                            <svg className="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        Select which AI agent you want to test for safety compliance
+                                    </p>
+                                </div>
+
+                                {/* Upload Document */}
+                                <div className="bg-white rounded-lg shadow p-6">
+                                    <h2 className="text-xl font-bold mb-4">Upload Document</h2>
+                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                                        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                        {uploadedFile ? (
+                                            <div>
+                                                <p className="text-green-600 font-medium mb-2">✓ {uploadedFile.name}</p>
+                                                <button onClick={() => setUploadedFile(null)} className="text-sm text-blue-600">Remove</button>
+                                            </div>
+                                        ) : (
+                                            <label className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer inline-block">
+                                                Select PDF
+                                                <input type="file" accept=".pdf" onChange={(e) => setUploadedFile(e.target.files[0])} className="hidden" />
+                                            </label>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Select Frameworks */}
+                                <div className="bg-white rounded-lg shadow p-6">
+                                    <h2 className="text-xl font-bold mb-4">Select Frameworks</h2>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[
+                                            { id: 'eu_ai_act', label: 'EU AI Act' },
+                                            { id: 'us_nist', label: 'US NIST AI RMF' },
+                                            { id: 'iso', label: 'ISO/IEC Standards' },
+                                            { id: 'unesco', label: 'UNESCO AI Ethics' },
+                                            { id: 'oecd', label: 'OECD Principles' },
+                                            { id: 'ieee', label: 'IEEE 7000' },
+                                        ].map(p => (
+                                            <label key={p.id} className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer ${selectedPolicies[p.id] ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                                                <input type="checkbox" checked={selectedPolicies[p.id]} onChange={(e) => setSelectedPolicies({...selectedPolicies, [p.id]: e.target.checked})} className="w-5 h-5" />
+                                                <span className="font-medium">{p.label}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button onClick={runTest} disabled={testInProgress || !uploadedFile} className="w-full bg-blue-600 text-white py-4 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 flex items-center justify-center gap-2">
+                                    {testInProgress ? <><Activity className="w-6 h-6 animate-spin" />Processing...</> : <><Shield className="w-6 h-6" />Run Test</>}
+                                </button>
+                            </div>
+                        )}
+
+                        {activeTab === 'reports' && (
+                            <div>
+                                {testInProgress ? (
+                                    <div className="bg-white rounded-lg shadow p-12 text-center">
+                                        <Activity className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-spin" />
+                                        <h3 className="text-xl font-bold mb-2">Processing...</h3>
+                                    </div>
+                                ) : reportsView === 'list' ? (
+                                    <div className="space-y-6">
+                                        <div className="bg-white rounded-lg shadow p-6">
+                                            <h2 className="text-2xl font-bold mb-6">All Reports</h2>
+                                            {testHistory.length === 0 ? (
+                                                <div className="text-center py-12">
+                                                    <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                                    <p className="text-gray-500 mb-4">No reports available</p>
+                                                    <button onClick={() => setActiveTab('test')} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                                                        Run a Test
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-4">
+                                                    {testHistory.map(test => (
+                                                        <div 
+                                                            key={test.id} 
+                                                            onClick={() => {
+                                                                setCurrentTestResult(test.result);
+                                                                setViewingReportId(test.id);
+                                                                setReportsView('detail');
+                                                            }}
+                                                            className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer hover:border-blue-300"
+                                                        >
+                                                            <div className="flex items-start justify-between mb-4">
+                                                                <div className="flex-1">
+                                                                    <h3 className="text-lg font-bold text-gray-900 mb-2">{test.fileName.replace(/\.pdf$/i, '')}</h3>
+                                                                    <p className="text-sm text-gray-500">
+                                                                        {new Date(test.date).toLocaleString('en-US', { 
+                                                                            year: 'numeric', 
+                                                                            month: 'long', 
+                                                                            day: 'numeric',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit'
+                                                                        })}
+                                                                    </p>
+                                                                </div>
+                                                                <ChevronRight className="w-6 h-6 text-gray-400" />
+                                                            </div>
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="flex items-center gap-2">
+                                                                    {getStatusIcon(test.status)}
+                                                                    <span className="text-sm font-medium capitalize">{test.status}</span>
+                                                                </div>
+                                                                <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getRiskColor(test.risk)}`}>
+                                                                    {test.risk?.toUpperCase() || 'UNKNOWN'} RISK
+                                                                </div>
+                                                                <div className="text-sm text-gray-600">
+                                                                    Score: <span className="font-bold">{test.score}%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : reportsView === 'detail' && currentTestResult ? (
+                                    <div className="space-y-6">
+                                        {/* Report Header - Redesigned */}
+                                        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-lg p-6">
+                                            <button 
+                                                onClick={() => setReportsView('list')} 
+                                                className="flex items-center gap-2 text-blue-100 hover:text-white font-medium mb-4 transition-colors"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                                Back to Reports
+                                            </button>
+                                            
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-blue-100 text-sm mb-2">AI Safety Compliance Report</p>
+                                                    <h1 className="text-3xl font-bold">
+                                                        {testHistory.find(t => t.id === viewingReportId)?.fileName.replace(/\.pdf$/i, '') || 'Untitled Document'}
+                                                    </h1>
+                                                    <p className="text-blue-100 text-sm mt-2">
+                                                        Generated on {testHistory.find(t => t.id === viewingReportId) ? 
+                                                            new Date(testHistory.find(t => t.id === viewingReportId).date).toLocaleString('en-US', {
+                                                                month: 'long',
+                                                                day: 'numeric', 
+                                                                year: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            }) : ''}
+                                                    </p>
+                                                </div>
+                                                
+                                                <div className="flex gap-3">
+                                                    {(() => {
+                                                        const currentTest = testHistory.find(t => t.id === viewingReportId);
+                                                        return currentTest?.file && (
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const url = URL.createObjectURL(currentTest.file);
+                                                                    const a = document.createElement('a');
+                                                                    a.href = url;
+                                                                    a.download = currentTest.fileName;
+                                                                    a.click();
+                                                                    URL.revokeObjectURL(url);
+                                                                }}
+                                                                className="flex items-center gap-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg font-medium transition-all backdrop-blur-sm"
+                                                            >
+                                                                <Upload className="w-4 h-4" />
+                                                                Original PDF
+                                                            </button>
+                                                        );
+                                                    })()}
+                                                    <button 
+                                                        onClick={() => window.print()} 
+                                                        className="flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition-all shadow-md"
+                                                    >
+                                                        <FileText className="w-4 h-4" />
+                                                        Download Report
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ReportView report={currentTestResult} />
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+
+                        {activeTab === 'settings' && (
+                            <div className="bg-white rounded-lg shadow p-6">
+                                <h2 className="text-xl font-bold mb-6">Settings</h2>
+                                <div>
+                                    <label className="block text-sm mb-1">Webhook URL</label>
+                                    <input type="text" value={WEBHOOK_URL} readOnly className="w-full px-3 py-2 border rounded bg-gray-50" />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<AISafetyDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>
