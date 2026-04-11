@@ -317,6 +317,70 @@ The frontend model settings override the server `.env` on a per-request basis.
 
 ---
 
+## Design Rationale
+
+### Why a Mixture-of-Experts approach?
+
+A single LLM judge introduces a single point of failure — one model's blind spots, training biases, and prompt sensitivity determine the entire verdict. The MoE architecture distributes evaluation across three independent judges with different lenses (behavioral safety, governance, regulatory compliance), so no single failure mode dominates the outcome.
+
+### Why three specific dimensions?
+
+- **Judge 1 (Red Team)** covers what the content *does* — direct harm, deception, and behavioral violations that would be immediately observable by an affected user.
+- **Judge 2 (Governance)** covers what the content *implies* about the deploying institution — whether the system exhibits the properties that responsible AI governance requires.
+- **Judge 3 (Regulatory)** covers what the content *violates* in law and international standards — grounding verdicts in enforceable frameworks rather than abstract principles.
+
+### Why the conservative tier override?
+
+If any single judge reaches Tier 4 (Prohibited), the final verdict is always REJECTED — regardless of what the other two judges found. This is intentional: a safety system that can be voted down by a majority is not a safety system. The asymmetry biases toward caution, which is appropriate for a UN deployment context.
+
+### Why are disagreements surfaced rather than resolved?
+
+Judge disagreements are included in the final report as explicit governance signals. Suppressing them would hide information that human reviewers need. A system that presents false consensus is more dangerous than one that admits uncertainty.
+
+### Why async parallelism?
+
+Judges are independent — they share no state. Running them sequentially would triple evaluation time for no reason. The orchestrator uses `asyncio.gather` to run all three simultaneously, then waits for the slowest one.
+
+---
+
+## Responsible AI Considerations
+
+### What this system is for
+
+The UNICC AI Safety Lab is designed to assist human reviewers in screening AI-generated content before deployment in UN operational contexts. It is a decision-support tool, not a decision-making system.
+
+### What this system is not
+
+- **Not a legal determination.** A REJECTED verdict does not constitute a legal finding of harm or liability. It is a signal for human review.
+- **Not infallible.** The judges are themselves LLMs and inherit the limitations of those models — including potential biases, hallucinations, and inconsistent scoring across runs.
+- **Not a replacement for domain expertise.** Outputs on sensitive topics (indigenous rights, conflict zones, medical content) should always be reviewed by subject-matter experts alongside this system's verdict.
+
+### Limitations
+
+| Limitation | Implication |
+|---|---|
+| Judges share the same underlying model family | Systematic biases in the base model affect all three judges simultaneously |
+| Scoring is not calibrated across model providers | A score of 65 from Claude and 65 from Llama3 do not represent the same level of risk |
+| Context window limits content to 6,000 chars per judge | Long documents are truncated; violations in later sections may be missed |
+| Risk tiers are ordinal, not probabilistic | Tier 3 does not mean "3× more dangerous than Tier 1" |
+| Demo mode returns a fixed pre-generated report | In sandbox environments without API access, results are illustrative only |
+
+### Human oversight
+
+The system is explicitly designed around the principle that a human must review any REQUIRES HUMAN REVIEW or REJECTED verdict before action is taken. The deployment verdict rules (see above) are designed to escalate to human review aggressively — not to automate gatekeeping.
+
+### Data handling
+
+- Content submitted for evaluation is not stored persistently. The in-memory report store is session-scoped and cleared when the server restarts.
+- API keys entered in the frontend are sent directly to the LLM provider and are never logged or stored server-side.
+- No telemetry or usage data is collected.
+
+### Intended use scope
+
+This system is built for the UNICC/NYU SP26 capstone evaluation context. Before any production deployment in UN operations, it would require: independent security review, bias auditing across representative content types, calibration studies per model provider, and formal alignment with UN AI governance policy.
+
+---
+
 ## References
 
 - FA25 Team 1 (Petri): *LLM-as-Judge for AI Safety Evaluation*, Guo/Yu/Sun/Fortino
