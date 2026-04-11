@@ -213,7 +213,19 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ---
 
-### Step 3 — Start the Server
+### Step 3a — Standalone Demo Run (DGX sandbox / no API key)
+
+If you are in a sandbox environment or do not have an API key, run this instead:
+
+```bash
+python run_demo.py
+```
+
+This loads the sample article, runs the full evaluation pipeline in demo mode, prints a formatted report to the terminal, and saves the JSON output to `data/`. No server required — the process exits cleanly.
+
+---
+
+### Step 3b — Full Interactive Server (local use)
 
 **Windows:**
 ```cmd
@@ -227,9 +239,9 @@ cd /path/to/UNICC/src/backend
 python3 -m uvicorn main:app --reload --port 8000
 ```
 
-Then open **`http://localhost:8000`** in your browser — the frontend loads automatically.
+The server will start and remain running — this is expected. It does not exit.
 
-> The backend now serves both the API and the frontend from the same address. Do not open `index.html` directly from the file system; use `http://localhost:8000` instead.
+Open **`http://localhost:8000`** in your browser — the full UI loads automatically.
 
 Interactive API docs: `http://localhost:8000/docs`
 
