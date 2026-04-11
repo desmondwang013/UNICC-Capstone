@@ -16,6 +16,8 @@ logging.basicConfig(
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -36,6 +38,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve frontend — resolve relative to this file so it works from any cwd
+_FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend")
+if os.path.isdir(_FRONTEND_DIR):
+    app.mount("/static", StaticFiles(directory=_FRONTEND_DIR), name="static")
+
 orchestrator  = MoEOrchestrator()
 _report_store: Dict[str, EnsembleReport] = {}
 
@@ -43,6 +50,14 @@ _report_store: Dict[str, EnsembleReport] = {}
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+@app.get("/")
+async def root():
+    index = os.path.join(_FRONTEND_DIR, "index.html")
+    if os.path.isfile(index):
+        return FileResponse(index)
+    return {"status": "UNICC AI Safety Lab API", "docs": "/docs"}
+
 
 @app.get("/health")
 async def health():

@@ -1,5 +1,6 @@
 /* ── Config ── */
-const API = 'http://localhost:8000';
+// Empty string = same origin, works whether served from port 80, 8000, or any sandbox URL
+const API = '';
 
 /* ── State ── */
 let currentProvider = 'anthropic';
