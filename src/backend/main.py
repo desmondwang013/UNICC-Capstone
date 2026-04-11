@@ -46,7 +46,8 @@ _report_store: Dict[str, EnsembleReport] = {}
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "version": "2.0.0"}
+    from orchestrator import _is_demo_mode
+    return {"status": "ok", "version": "2.0.0", "demo_mode": _is_demo_mode()}
 
 
 @app.post("/evaluate", response_model=EnsembleReport)

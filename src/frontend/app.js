@@ -26,8 +26,14 @@ async function checkBackend() {
     const res = await fetch(`${API}/health`, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       backendLive = true;
-      el.className = 'backend-status live';
-      dot.textContent = 'Live';
+      const data = await res.json().catch(() => ({}));
+      if (data.demo_mode) {
+        el.className = 'backend-status demo';
+        dot.textContent = 'Demo mode';
+      } else {
+        el.className = 'backend-status live';
+        dot.textContent = 'Live';
+      }
       return;
     }
   } catch (_) {}
