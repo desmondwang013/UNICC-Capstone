@@ -213,7 +213,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ---
 
-### Step 3 — Start the Backend
+### Step 3 — Start the Server
 
 **Windows:**
 ```cmd
@@ -227,30 +227,22 @@ cd /path/to/UNICC/src/backend
 python3 -m uvicorn main:app --reload --port 8000
 ```
 
-The API will be running at `http://localhost:8000`.  
+Then open **`http://localhost:8000`** in your browser — the frontend loads automatically.
+
+> The backend now serves both the API and the frontend from the same address. Do not open `index.html` directly from the file system; use `http://localhost:8000` instead.
+
 Interactive API docs: `http://localhost:8000/docs`
 
 ---
 
-### Step 4 — Open the Frontend
+### Step 4 — Run an Evaluation
 
-Double-click `src/frontend/index.html` to open it in your browser — no server needed for the frontend.
-
-> If you run into browser security restrictions, serve it locally instead:
->
-> **Windows:** `py -m http.server 3000` (run from `src/frontend/`)  
-> **macOS:** `python3 -m http.server 3000` (run from `src/frontend/`)  
-> Then go to `http://localhost:3000`
-
----
-
-### Step 5 — Run an Evaluation
-
-1. Go to the **Run Evaluation** tab
-2. Choose **Claude**, **ChatGPT**, or **Local SLM** in Model Settings and enter your API key
-3. Paste content or upload a file (`.txt`, `.md`, `.json`, `.csv`, `.xlsx`, `.docx`)
-4. Click **Run Safety Evaluation**
-5. Results appear in the **Reports** tab
+1. Go to **`http://localhost:8000`** in your browser
+2. Go to the **Run Evaluation** tab
+3. Choose **Claude**, **ChatGPT**, or **Local SLM** in Model Settings and enter your API key
+4. Paste content or upload a file (`.txt`, `.md`, `.json`, `.csv`, `.xlsx`, `.docx`)
+5. Click **Run Safety Evaluation**
+6. Results appear in the **Reports** tab
 
 ---
 
