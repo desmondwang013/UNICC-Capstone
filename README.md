@@ -6,7 +6,7 @@
 
 ## What This Is
 
-The UNICC AI Safety Lab is a **council-of-experts AI safety evaluation system** that assesses AI-generated content and agent outputs before deployment in the UN system. Rather than relying on a single evaluator, it runs three independent expert judges in parallel — each with a different evaluation lens — then arbitrates disagreements and synthesizes a final safety verdict.
+The UNICC AI Safety Lab is a **council-of-experts AI safety evaluation system** that assesses AI-generated content and agent outputs before deployment in the UN system. Rather than relying on a single evaluator, it runs three independent expert judges in parallel — each with a different evaluation lens — then arbitrates disagreements and synthesizes a final safety verdict.  
 
 This project integrates and extends the top three FA25 UNICC competition solutions into a unified Mixture-of-Experts (MoE) pipeline.
 
