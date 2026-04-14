@@ -1,0 +1,85 @@
+# Research Summary
+
+## Project Background
+The UNICC AI Safety Lab is a Spring 2026 capstone initiative that builds on the Fall 2025 UNICC AI Safety Testing competition. Rather than selecting a single prior solution, the new lab is intended to unify the top three solutions from Fall 2025 into a multi-module inference ensemble deployed on a standalone small language model (SLM). This ensemble is expected to function as a “council of experts” that independently evaluates AI agents and then synthesizes final safety recommendations. 
+
+The project addresses a central governance problem: how can organizations systematically evaluate AI systems for safety, trust, and compliance before deployment in institutional environments? The memorandum emphasizes the need for an auditable, controllable, and governance-aligned evaluation environment that avoids reliance on black-box external APIs. Instead, the project is grounded in an on-premises AI setup using the NYU DGX Spark cluster and open-source model weights.
+
+## Project 1 Scope
+Project 1 is defined as **Research and Platform Preparation**. Its responsibilities include:
+
+- reviewing research on multi-module inference ensembles, council-of-experts systems, and small language models
+- analyzing the top three Fall 2025 AI safety solutions
+- preparing the SLM environment assumptions for the NYU DGX Spark cluster
+- creating technical documentation on architecture, deployment procedures, and operational guidelines
+- defining the conceptual framework for how the three expert modules will interact and coordinate :contentReference[oaicite:10]{index=10}
+
+This means Project 1 is primarily a design and platform-planning effort. It is not the phase in which the entire fine-tuned ensemble or user-facing product must be built. Instead, Project 1 should produce the specifications, assumptions, and technical blueprints that make Projects 2 and 3 possible.
+
+## Core Concepts
+
+### Multi-Module Inference Ensemble
+A multi-module inference ensemble is a system in which several expert modules evaluate the same case or input independently. Instead of using a single model output as the definitive answer, the ensemble captures multiple perspectives. In this project, the goal is not merely to add multiple modules, but to preserve the diversity of perspectives embodied by the top three Fall 2025 solutions. :contentReference[oaicite:11]{index=11}
+
+In the context of AI safety evaluation, this is useful because different modules may identify different categories of risk. One module might focus on adversarial safety failures, another on policy and governance alignment, and another on humanitarian or operational implications.
+
+### Council of Experts
+A council-of-experts architecture is an extension of ensemble logic. In this approach, each expert module performs an independent assessment, but the system also includes coordination mechanisms that allow the experts to critique each other, expose disagreement, arbitrate unresolved conflicts, and synthesize a final recommendation. The Spring 2026 memorandum explicitly calls for this type of architecture, including critique, arbitration, disagreement exposure, and final recommendation synthesis. :contentReference[oaicite:12]{index=12}
+
+This differs from a basic ensemble average. The purpose is not only to aggregate scores, but to make disagreement visible and support more robust, thoughtful oversight in high-stakes institutional settings.
+
+### Standalone SLM
+The project requires the use of a standalone small language model based on open-source weights and deployed in an on-premises environment. The memorandum frames this as an important design choice because it enables secure, auditable, and controllable experimentation without relying on vendor-hosted black-box services. The NYU DGX Spark cluster serves as the target deployment environment for this purpose. :contentReference[oaicite:13]{index=13}
+
+For Project 1, this means one of the main design questions is: what kind of open-source SLM is practical for deployment in a controlled DGX environment, while still being capable enough to support a modular AI safety ensemble?
+
+## Analysis of the Three Fall 2025 Solutions
+
+### Jitong Yu – Safety Agent
+Jitong Yu’s Fall 2025 solution focuses on a rule-driven AI Safety Agent built on Petri’s compliance engine. It includes:
+- multi-dimensional 0–5 safety scoring
+- semantic trigger detection
+- adaptive adversarial probing
+- a transcript-based state machine
+- PASS / WARN / FAIL logic
+- risk-tier classification
+- automated reporting through a Streamlit interface :contentReference[oaicite:14]{index=14}
+
+This work is strongest as a candidate foundation for the **Safety / Adversarial Expert Module** in the new ensemble.
+
+### Ning Sun – Interface and Workflow Layer
+Ning Sun’s Fall 2025 project centers on a user-facing AI safety testing interface. It includes:
+- conversation upload and validation
+- tier-based testing workflow
+- progress tracking during evaluation
+- safety dashboards and detailed score views
+- historical archives and test traceability
+- automated PDF report generation
+- structured reporting for operational review :contentReference[oaicite:15]{index=15}
+
+This work is strongest as a candidate foundation for the **operational workflow, reporting, and interface layer** of the new lab.
+
+### Guo et al. – Petri and LLM-as-Judge Evaluation Logic
+The Guo et al. paper presents a Petri-based LLM-as-judge framework for governance-aligned evaluation. It includes:
+- structured prompts based on governance documents
+- multi-dimensional safety scoring
+- semantic trigger detection
+- repeatability and consistency logic
+- dual-path API and JSON evaluation workflows
+- governance-aligned reasoning and interpretable outputs :contentReference[oaicite:16]{index=16}
+
+This work is strongest as a candidate foundation for the **evaluation backbone and orchestration foundation** of the new ensemble system.
+
+## Initial Project 1 Interpretation
+A reasonable interpretation of the target system is:
+
+- **Expert Module 1:** Safety / Adversarial Expert, derived primarily from Jitong Yu’s Safety Agent logic
+- **Expert Module 2:** Governance / Compliance Expert, derived primarily from Petri and LLM-as-judge logic in the Guo paper
+- **Expert Module 3:** Humanitarian / Operational Context Expert, informed by the UNICC-facing workflow and practical deployment considerations in Ning’s project, while also incorporating multilingual and humanitarian concerns discussed across the papers :contentReference[oaicite:17]{index=17} :contentReference[oaicite:18]{index=18} :contentReference[oaicite:19]{index=19}
+
+The resulting system would then require an orchestrator that supports:
+- independent module execution
+- critique and comparison across experts
+- arbitration when conflicts remain unresolved
+- synthesized final recommendation
+- traceable logs for UI and reporting layers

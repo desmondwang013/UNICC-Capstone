@@ -1,0 +1,129 @@
+# Fall 2025 Solution Comparison
+
+## Purpose
+This document compares the three key Fall 2025 UNICC AI safety solutions and proposes how they can be adapted into the Spring 2026 AI Safety Lab. Rather than viewing the prior solutions as competitors, this comparison treats them as complementary components of a larger multi-module inference ensemble. The goal is to identify the unique strengths of each solution and define how each could contribute to the architecture of a council-of-experts system. :contentReference[oaicite:21]{index=21}
+
+## Solution 1: Jitong Yu – Rule-Driven Safety Agent
+
+### Summary
+Jitong Yu’s solution focuses on a governance-aligned AI Safety Framework implemented through an operational Safety Agent built on Petri’s compliance engine. The system includes:
+- rule-based safety validation
+- multi-dimensional 0–5 scoring
+- semantic trigger detection
+- adaptive adversarial probing
+- transcript-based state management
+- PASS / WARN / FAIL classification
+- risk-tier tagging
+- automated PDF reporting :contentReference[oaicite:22]{index=22}
+
+### Main Strengths
+- strong focus on adversarial and harmful behavior detection
+- structured and rule-traceable evaluation logic
+- explicit guardrails and risk classification
+- practical use of transcript-based multi-turn reasoning
+- clear safety workflow under constrained resources
+
+### Limitations in Isolation
+- primarily framed as a single safety evaluation agent rather than a multi-expert architecture
+- not designed to coordinate multiple expert modules
+- governance and operational context are present, but not yet separated into distinct expert roles
+
+### Best Fit in Spring 2026 AI Safety Lab
+This solution is best adapted into the **Safety / Adversarial Expert Module**. It should be the module responsible for:
+- harmfulness
+- jailbreak resistance
+- semantic trigger detection
+- manipulation and deception risk
+- dynamic adversarial probing
+
+## Solution 2: Ning Sun – Interface, Workflow, and Reporting
+
+### Summary
+Ning Sun’s project focuses on developing the user-facing AI Safety Testing Interface and workflow for the UNICC context. It includes:
+- structured upload of conversation JSONs
+- evaluation execution flow
+- dashboard-based visualization
+- detailed dimension scoring views
+- historical test archives
+- automated PDF reporting
+- repeatable reporting outputs aligned with governance-oriented evaluation :contentReference[oaicite:23]{index=23}
+
+### Main Strengths
+- strongest operational workflow and user-facing design
+- strong focus on traceability, reporting, and usability
+- clean separation between data submission, processing, and result review
+- supports both technical and non-technical stakeholders
+
+### Limitations in Isolation
+- designed primarily as the interface/testing layer rather than the underlying ensemble intelligence
+- not itself a distinct expert module in the same sense as Jitong’s Safety Agent
+- depends on backend evaluation logic developed elsewhere
+
+### Best Fit in Spring 2026 AI Safety Lab
+This solution is best adapted into the **operational layer** of the new AI Safety Lab, especially:
+- workflow management
+- interface integration
+- reporting and visualization
+- result traceability
+- history and audit-view support
+
+## Solution 3: Guo et al. – Petri and LLM-as-Judge Architecture
+
+### Summary
+The Guo et al. work presents an exploratory proof-of-concept for AI safety evaluation using a Petri-based LLM-as-judge architecture. It includes:
+- governance-derived prompt design
+- multi-dimensional scoring
+- structured JSON outputs
+- semantic trigger detection
+- repeatability and consistency emphasis
+- dual-path API and JSON evaluation workflows
+- interpretability and audit-ready outputs aligned with governance requirements :contentReference[oaicite:24]{index=24}
+
+### Main Strengths
+- strongest theoretical and architectural framing of governance-aligned evaluation
+- clearest treatment of Petri/LLM-as-judge as an evaluation backbone
+- emphasizes consistency, interpretability, and executable governance logic
+- supports formalization of abstract frameworks into technical evaluation flows
+
+### Limitations in Isolation
+- oriented toward a centralized evaluation pipeline rather than a distributed council of experts
+- less developed on the user-facing workflow side than Ning’s solution
+- less specialized in explicit adversarial probing than Jitong’s solution
+
+### Best Fit in Spring 2026 AI Safety Lab
+This solution is best adapted into the **evaluation backbone and orchestration foundation**. It is the strongest starting point for:
+- governance and compliance-oriented evaluation logic
+- structured assessment templates
+- judge-style reasoning
+- repeatability and auditability mechanisms
+- the central coordination design that supports comparison across expert outputs
+
+## Comparison Table
+
+| Solution | Primary Focus | Core Strength | Best Role in New System |
+|---|---|---|---|
+| Jitong Yu | Safety Agent | rule-driven safety testing, triggers, adversarial probing | Safety / Adversarial Expert Module |
+| Ning Sun | Interface and workflow | operational pipeline, dashboards, reports, traceability | Interface / Reporting / Operational Layer |
+| Guo et al. | Petri LLM-as-judge architecture | governance-aligned evaluation backbone, structured scoring | Governance / Evaluation Backbone / Orchestration Foundation |
+
+## Recommended Mapping to Spring 2026 AI Safety Lab
+Based on the above comparison, the most practical first-draft mapping is:
+
+- **Module 1: Safety / Adversarial Expert**
+  - primarily derived from Jitong Yu’s Safety Agent
+  - focuses on harmfulness, jailbreaks, manipulation, and adversarial robustness
+
+- **Module 2: Governance / Compliance Expert**
+  - primarily derived from the Guo et al. evaluation backbone
+  - focuses on governance frameworks, policy alignment, documentation, and compliance-oriented reasoning
+
+- **Module 3: Humanitarian / Operational Context Expert**
+  - informed by the deployment, reporting, usability, and practical operational framing in Ning’s work
+  - extended to cover multilingual fairness, vulnerable-population concerns, and mission-specific operational risk
+
+
+## Summary
+The top three Fall 2025 solutions are not redundant. They emphasize different strengths:
+- Jitong’s work is strongest in **safety-agent behavior and adversarial logic**
+- Ning’s work is strongest in **workflow, visualization, and reporting**
+- Guo et al. is strongest in **Petri-based governance-aligned evaluation architecture**
