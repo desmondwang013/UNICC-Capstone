@@ -1,6 +1,7 @@
 # UNICC AI Safety Lab — SP26 Capstone
 
 **NYU × UNICC | Spring 2026 | Mixture-of-Experts AI Safety Evaluation System**
+**Presented by FA-26 Team 4**
 
 ---
 
